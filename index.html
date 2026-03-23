@@ -2,1045 +2,483 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Banking Tycoon 🏦</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --navy: #0a0f1e;
-    --navy2: #111827;
-    --card: #161e30;
-    --border: #1e2d45;
-    --gold: #f5c842;
-    --gold2: #e6b800;
-    --green: #22d48f;
-    --red: #ff5c5c;
-    --blue: #4f9eff;
-    --text: #e8edf5;
-    --muted: #7a8aaa;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-  body {
-    background: var(--navy);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    overflow-x: hidden;
-  }
-
-  .app {
-    width: 100%;
-    max-width: 430px;
-    min-height: 100vh;
-    position: relative;
-    overflow: hidden;
-  }
-
-  /* Background decoration */
-  .app::before {
-    content: '';
-    position: fixed;
-    top: -120px;
-    right: -80px;
-    width: 280px;
-    height: 280px;
-    background: radial-gradient(circle, rgba(245,200,66,0.08) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .screen {
-    display: none;
-    flex-direction: column;
-    min-height: 100vh;
-    padding: 24px 20px 40px;
-    position: relative;
-    z-index: 1;
-    animation: fadeUp 0.35s ease;
-  }
-  .screen.active { display: flex; }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── INTRO SCREEN ── */
-  .intro-logo {
-    font-family: 'Syne', sans-serif;
-    font-size: 52px;
-    line-height: 1;
-    margin-top: 60px;
-    margin-bottom: 6px;
-  }
-
-  .intro-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--gold);
-    line-height: 1.1;
-    margin-bottom: 8px;
-  }
-
-  .intro-sub {
-    font-size: 14px;
-    color: var(--muted);
-    margin-bottom: 40px;
-    line-height: 1.6;
-  }
-
-  .tag-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 48px;
-  }
-
-  .tag {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 12px;
-    color: var(--muted);
-  }
-
-  .tag.gold { border-color: var(--gold); color: var(--gold); }
-
-  .stats-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 40px;
-  }
-
-  .stat-box {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 10px;
-    text-align: center;
-  }
-
-  .stat-num {
-    font-family: 'Syne', sans-serif;
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--gold);
-    display: block;
-  }
-
-  .stat-label {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
-  /* ── BUTTONS ── */
-  .btn-primary {
-    background: var(--gold);
-    color: #0a0f1e;
-    border: none;
-    border-radius: 16px;
-    padding: 18px 24px;
-    font-family: 'Syne', sans-serif;
-    font-size: 17px;
-    font-weight: 700;
-    cursor: pointer;
-    width: 100%;
-    transition: transform 0.12s, box-shadow 0.12s;
-    box-shadow: 0 4px 20px rgba(245,200,66,0.3);
-    letter-spacing: 0.3px;
-  }
-
-  .btn-primary:active { transform: scale(0.97); }
-
-  .btn-secondary {
-    background: transparent;
-    color: var(--muted);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 14px 24px;
-    font-size: 14px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 10px;
-    transition: color 0.2s, border-color 0.2s;
-  }
-
-  .btn-secondary:active { color: var(--text); }
-
-  /* ── TEACH SCREEN ── */
-  .teach-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 28px;
-  }
-
-  .teach-step {
-    background: var(--gold);
-    color: #0a0f1e;
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 20px;
-  }
-
-  .teach-progress {
-    flex: 1;
-    height: 4px;
-    background: var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .teach-progress-fill {
-    height: 100%;
-    background: var(--gold);
-    border-radius: 4px;
-    transition: width 0.4s ease;
-  }
-
-  .teach-emoji {
-    font-size: 48px;
-    margin-bottom: 16px;
-    display: block;
-  }
-
-  .teach-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 8px;
-  }
-
-  .teach-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 26px;
-    font-weight: 800;
-    line-height: 1.2;
-    margin-bottom: 6px;
-  }
-
-  .teach-vn {
-    font-size: 14px;
-    color: var(--green);
-    margin-bottom: 20px;
-    font-weight: 500;
-  }
-
-  .teach-body {
-    font-size: 15px;
-    line-height: 1.7;
-    color: #b8c5d8;
-    margin-bottom: 24px;
-  }
-
-  .vocab-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 10px;
-  }
-
-  .vocab-en {
-    font-family: 'Syne', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--gold);
-    margin-bottom: 4px;
-  }
-
-  .vocab-vn {
-    font-size: 13px;
-    color: var(--green);
-    margin-bottom: 4px;
-    font-weight: 500;
-  }
-
-  .vocab-def {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-
-  .spacer { flex: 1; }
-
-  /* ── QUESTION SCREEN ── */
-  .q-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-  }
-
-  .q-counter {
-    font-size: 12px;
-    color: var(--muted);
-    font-weight: 500;
-  }
-
-  .q-score {
-    font-family: 'Syne', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--gold);
-  }
-
-  .q-scenario {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-
-  .q-scenario-label {
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--gold);
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-
-  .q-scenario-text {
-    font-size: 15px;
-    line-height: 1.65;
-    color: var(--text);
-  }
-
-  .q-question {
-    font-family: 'Syne', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    line-height: 1.3;
-  }
-
-  .choices {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-
-  .choice-btn {
-    background: var(--card);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 18px;
-    text-align: left;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s, transform 0.1s;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .choice-btn:active { transform: scale(0.98); }
-
-  .choice-btn.correct {
-    border-color: var(--green);
-    background: rgba(34,212,143,0.08);
-  }
-
-  .choice-btn.wrong {
-    border-color: var(--red);
-    background: rgba(255,92,92,0.08);
-  }
-
-  .choice-btn.disabled { cursor: default; }
-
-  .choice-letter {
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    background: var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    flex-shrink: 0;
-    transition: background 0.15s, color 0.15s;
-  }
-
-  .choice-btn.correct .choice-letter { background: var(--green); color: #0a0f1e; }
-  .choice-btn.wrong .choice-letter { background: var(--red); color: white; }
-
-  .choice-text {
-    font-size: 14px;
-    line-height: 1.4;
-    color: var(--text);
-  }
-
-  /* ── RESULT POPUP ── */
-  .result-popup {
-    display: none;
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 430px;
-    background: var(--card);
-    border-top: 1px solid var(--border);
-    border-radius: 24px 24px 0 0;
-    padding: 24px 20px 40px;
-    z-index: 100;
-    animation: slideUp 0.3s ease;
-  }
-
-  .result-popup.show { display: block; }
-
-  @keyframes slideUp {
-    from { transform: translateX(-50%) translateY(100%); }
-    to   { transform: translateX(-50%) translateY(0); }
-  }
-
-  .result-verdict {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-
-  .result-icon {
-    font-size: 28px;
-  }
-
-  .result-verdict-text {
-    font-family: 'Syne', sans-serif;
-    font-size: 20px;
-    font-weight: 800;
-  }
-
-  .result-verdict-text.correct { color: var(--green); }
-  .result-verdict-text.wrong { color: var(--red); }
-
-  .result-explain {
-    font-size: 14px;
-    line-height: 1.7;
-    color: #b8c5d8;
-    margin-bottom: 16px;
-  }
-
-  .result-vocab {
-    background: rgba(245,200,66,0.07);
-    border: 1px solid rgba(245,200,66,0.2);
-    border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 20px;
-  }
-
-  .result-vocab-label {
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--gold);
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-
-  .result-vocab-word {
-    font-family: 'Syne', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 2px;
-  }
-
-  .result-vocab-vn {
-    font-size: 13px;
-    color: var(--green);
-  }
-
-  .overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 99;
-  }
-  .overlay.show { display: block; }
-
-  /* ── END SCREEN ── */
-  .end-score-circle {
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    border: 3px solid var(--gold);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 40px auto 30px;
-    box-shadow: 0 0 40px rgba(245,200,66,0.2);
-  }
-
-  .end-score-num {
-    font-family: 'Syne', sans-serif;
-    font-size: 42px;
-    font-weight: 800;
-    color: var(--gold);
-    line-height: 1;
-  }
-
-  .end-score-label {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
-  .end-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 28px;
-    font-weight: 800;
-    text-align: center;
-    margin-bottom: 8px;
-    line-height: 1.2;
-  }
-
-  .end-sub {
-    text-align: center;
-    font-size: 14px;
-    color: var(--muted);
-    margin-bottom: 36px;
-    line-height: 1.6;
-  }
-
-  .vocab-recap {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 20px;
-    margin-bottom: 28px;
-  }
-
-  .vocab-recap-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--gold);
-    margin-bottom: 16px;
-    letter-spacing: 0.5px;
-  }
-
-  .vocab-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .vocab-row:last-child { border-bottom: none; }
-
-  .vocab-row-en {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .vocab-row-vn {
-    font-size: 12px;
-    color: var(--green);
-    text-align: right;
-    max-width: 55%;
-  }
+    --navy:#0a0f1e; --card:#161e30; --border:#1e2d45;
+    --gold:#f5c842; --green:#22d48f; --red:#ff5c5c;
+    --orange:#ff9f43; --text:#e8edf5; --muted:#7a8aaa;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{background:var(--navy);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:430px;min-height:100vh;}
+  .screen{display:none;flex-direction:column;min-height:100vh;padding:24px 20px 52px;animation:fadeUp .3s ease;}
+  .screen.active{display:flex;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+  /* BUTTONS */
+  .btn{border:none;border-radius:14px;padding:16px 20px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;width:100%;transition:transform .1s;}
+  .btn:active{transform:scale(.97);}
+  .btn-gold{background:var(--gold);color:#0a0f1e;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;box-shadow:0 4px 24px rgba(245,200,66,.25);}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);margin-top:10px;}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px;}
+  .spacer{flex:1;min-height:20px;}
+
+  /* INTRO */
+  .intro-logo{font-size:56px;margin-top:48px;margin-bottom:8px;display:block;}
+  .intro-title{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--gold);line-height:1.05;margin-bottom:8px;}
+  .intro-desc{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:28px;}
+  .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+  .pill{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:5px 13px;font-size:12px;color:var(--muted);}
+  .pill.gold{border-color:var(--gold);color:var(--gold);}
+  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px;}
+  .stat-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 10px;text-align:center;}
+  .stat-num{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--gold);display:block;}
+  .stat-lbl{font-size:11px;color:var(--muted);margin-top:2px;}
+  .warn{background:rgba(255,92,92,.08);border:1px solid rgba(255,92,92,.25);border-radius:12px;padding:12px 14px;font-size:13px;color:#ff8a8a;line-height:1.5;margin-bottom:20px;}
+  .name-lbl{font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:500;}
+  .name-inp{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;outline:none;margin-bottom:16px;transition:border-color .2s;}
+  .name-inp:focus{border-color:var(--gold);}
+  .name-inp::placeholder{color:var(--muted);}
+
+  /* TEACH */
+  .teach-topbar{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
+  .teach-badge{background:var(--gold);color:#0a0f1e;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;}
+  .prog-bar{flex:1;height:4px;background:var(--border);border-radius:4px;overflow:hidden;}
+  .prog-fill{height:100%;background:var(--gold);border-radius:4px;transition:width .4s ease;}
+  .teach-emoji{font-size:44px;margin-bottom:14px;display:block;}
+  .teach-cat{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:6px;}
+  .teach-h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1.2;margin-bottom:4px;}
+  .teach-vn{font-size:14px;color:var(--green);font-weight:500;margin-bottom:18px;}
+  .teach-body{font-size:14px;line-height:1.75;color:#b8c5d8;margin-bottom:20px;white-space:pre-line;}
+  .vocab-en{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--gold);margin-bottom:2px;}
+  .vocab-vn{font-size:13px;color:var(--green);font-weight:500;margin-bottom:3px;}
+  .vocab-def{font-size:12px;color:var(--muted);line-height:1.5;}
+
+  /* QUESTION */
+  .q-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+  .q-counter{font-size:12px;color:var(--muted);font-weight:500;}
+  .q-score-d{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--gold);}
+  .timer-wrap{display:flex;justify-content:center;margin-bottom:14px;position:relative;}
+  .timer-svg{transform:rotate(-90deg);}
+  .timer-bg{fill:none;stroke:var(--border);stroke-width:5;}
+  .timer-ring{fill:none;stroke:var(--gold);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset .9s linear,stroke .3s;}
+  .timer-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Syne',sans-serif;font-size:22px;font-weight:800;}
+  .speed-badge{display:none;align-items:center;gap:6px;margin-bottom:14px;background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.25);border-radius:10px;padding:8px 14px;font-size:13px;color:var(--gold);font-weight:600;}
+  .speed-badge.show{display:flex;animation:fadeUp .3s ease;}
+  .scenario-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px;}
+  .scenario-lbl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:8px;}
+  .scenario-txt{font-size:14px;line-height:1.65;}
+  .q-text{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;line-height:1.3;margin-bottom:18px;}
+  .choices{display:flex;flex-direction:column;gap:10px;}
+  .choice{background:var(--card);border:1.5px solid var(--border);border-radius:13px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .15s,background .15s,transform .1s;text-align:left;width:100%;}
+  .choice:active{transform:scale(.98);}
+  .choice.correct{border-color:var(--green);background:rgba(34,212,143,.08);}
+  .choice.wrong{border-color:var(--red);background:rgba(255,92,92,.08);}
+  .choice.disabled{cursor:default;}
+  .ch-letter{width:30px;height:30px;border-radius:8px;background:var(--border);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;flex-shrink:0;transition:background .15s,color .15s;}
+  .choice.correct .ch-letter{background:var(--green);color:#0a0f1e;}
+  .choice.wrong .ch-letter{background:var(--red);color:#fff;}
+  .ch-txt{font-size:14px;line-height:1.4;}
+
+  /* RESULT SHEET */
+  .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:99;}
+  .overlay.show{display:block;}
+  .result-sheet{display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);border-top:1px solid var(--border);border-radius:24px 24px 0 0;padding:22px 20px 44px;z-index:100;animation:slideUp .3s ease;}
+  .result-sheet.show{display:block;}
+  @keyframes slideUp{from{transform:translateX(-50%) translateY(100%)}to{transform:translateX(-50%) translateY(0)}}
+  .rs-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .rs-icon{font-size:26px;}
+  .rs-verdict{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;}
+  .rs-verdict.ok{color:var(--green);}
+  .rs-verdict.bad{color:var(--red);}
+  .rs-pts{margin-left:auto;font-family:'Syne',sans-serif;font-size:18px;color:var(--gold);}
+  .rs-explain{font-size:14px;line-height:1.7;color:#b8c5d8;margin-bottom:14px;}
+  .rs-vocab{background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.2);border-radius:12px;padding:12px 14px;margin-bottom:18px;}
+  .rsv-lbl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:6px;}
+  .rsv-en{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:2px;}
+  .rsv-vn{font-size:12px;color:var(--green);}
+
+  /* END */
+  .end-circle{width:150px;height:150px;border-radius:50%;border:3px solid var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:40px auto 20px;box-shadow:0 0 40px rgba(245,200,66,.18);}
+  .end-score-n{font-family:'Syne',sans-serif;font-size:44px;font-weight:800;color:var(--gold);line-height:1;}
+  .end-score-l{font-size:12px;color:var(--muted);margin-top:2px;}
+  .end-name{font-size:13px;color:var(--muted);text-align:center;margin-bottom:4px;}
+  .end-h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;text-align:center;margin-bottom:6px;line-height:1.2;}
+  .end-sub{text-align:center;font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.6;padding:0 12px;}
+  .score-card{background:var(--card);border:1.5px solid var(--gold);border-radius:16px;padding:20px;margin-bottom:20px;text-align:center;}
+  .sc-lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px;}
+  .sc-name{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:4px;}
+  .sc-pts{font-family:'Syne',sans-serif;font-size:40px;font-weight:800;color:var(--gold);line-height:1;margin-bottom:4px;}
+  .sc-max{font-size:12px;color:var(--muted);margin-bottom:12px;}
+  .sc-rank{display:inline-block;background:var(--navy);border:1px solid var(--border);border-radius:20px;padding:5px 16px;font-size:13px;font-weight:600;}
+  .vrc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:20px;}
+  .vrc-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--gold);margin-bottom:14px;}
+  .vr-row{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--border);gap:8px;}
+  .vr-row:last-child{border-bottom:none;}
+  .vr-en{font-size:13px;font-weight:600;flex-shrink:0;}
+  .vr-vn{font-size:12px;color:var(--green);text-align:right;}
+
+  /* LOCK */
+  .lock-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;}
+  .lock-icon{font-size:56px;}
+  .lock-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--gold);line-height:1.2;}
+  .lock-sub{font-size:14px;color:var(--muted);line-height:1.6;max-width:280px;}
+
+  @keyframes flashRed{0%,100%{background:var(--navy)}50%{background:rgba(255,92,92,.12)}}
+  .timeout-flash{animation:flashRed .4s ease;}
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- ── INTRO ── -->
-  <div class="screen active" id="screen-intro">
-    <span class="intro-logo">🏦</span>
-    <div class="intro-title">Banking<br>Tycoon</div>
-    <div class="intro-sub">Học tiếng Anh ngân hàng<br>qua tình huống thực tế.</div>
-
-    <div class="tag-row">
-      <span class="tag gold">8 scenarios</span>
-      <span class="tag">Types of Banks</span>
-      <span class="tag">Core Functions</span>
-      <span class="tag">Key Vocab</span>
-    </div>
-
-    <div class="stats-row">
-      <div class="stat-box">
-        <span class="stat-num">8</span>
-        <span class="stat-label">Scenarios</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-num">10</span>
-        <span class="stat-label">Vocab words</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-num">~6'</span>
-        <span class="stat-label">To finish</span>
-      </div>
-    </div>
-
-    <div class="spacer"></div>
-    <button class="btn-primary" onclick="startGame()">Start Playing →</button>
-    <button class="btn-secondary" onclick="showScreen('screen-vocab')">📖 Study vocab first</button>
+<!-- INTRO -->
+<div class="screen active" id="s-intro">
+  <span class="intro-logo">🏦</span>
+  <div class="intro-title">Banking<br>Tycoon</div>
+  <p class="intro-desc">Learn banking English through real scenarios. Answer fast — speed earns bonus points!</p>
+  <div class="pill-row">
+    <span class="pill gold">⏱ 15s timer</span>
+    <span class="pill gold">⚡ Speed bonus</span>
+    <span class="pill">8 questions</span>
+    <span class="pill">10 vocab</span>
   </div>
-
-  <!-- ── VOCAB REFERENCE ── -->
-  <div class="screen" id="screen-vocab">
-    <div class="teach-header">
-      <div class="teach-step">VOCAB GUIDE</div>
-    </div>
-    <div class="teach-label">Key Terms</div>
-    <div class="teach-title" style="margin-bottom:20px">10 Words to Know</div>
-
-    <div class="vocab-card">
-      <div class="vocab-en">Central Bank</div>
-      <div class="vocab-vn">= Ngân hàng Trung ương</div>
-      <div class="vocab-def">Controls money supply, lends to other banks in crisis, issues banknotes.</div>
-    </div>
-    <div class="vocab-card">
-      <div class="vocab-en">Lender of Last Resort</div>
-      <div class="vocab-vn">= Người cho vay cuối cùng</div>
-      <div class="vocab-def">The Central Bank's emergency role — rescues banks when they run out of money.</div>
-    </div>
-    <div class="vocab-card">
-      <div class="vocab-en">Net Interest Margin (NIM)</div>
-      <div class="vocab-vn">= Biên lãi suất thuần</div>
-      <div class="vocab-def">Loan rate − Deposit rate = Bank's profit. Main income source.</div>
-    </div>
-    <div class="vocab-card">
-      <div class="vocab-en">Collateral</div>
-      <div class="vocab-vn">= Tài sản thế chấp</div>
-      <div class="vocab-def">An asset (e.g. house) pledged to the bank to secure a loan.</div>
-    </div>
-    <div class="vocab-card">
-      <div class="vocab-en">Fixed Deposit</div>
-      <div class="vocab-vn">= Tiết kiệm có kỳ hạn</div>
-      <div class="vocab-def">Money locked for 6–12 months. Higher interest rate than savings account.</div>
-    </div>
-    <div class="vocab-card">
-      <div class="vocab-en">Mortgage</div>
-      <div class="vocab-vn">= Vay mua nhà</div>
-      <div class="vocab-def">Long-term loan to buy a house. The house is the collateral.</div>
-    </div>
-    <div class="vocab-card">
-      <div class="vocab-en">SWIFT Transfer</div>
-      <div class="vocab-vn">= Chuyển tiền quốc tế</div>
-      <div class="vocab-def">International bank transfer between countries.</div>
-    </div>
-    <div class="vocab-card">
-      <div class="vocab-en">Trade Finance</div>
-      <div class="vocab-vn">= Tài trợ thương mại</div>
-      <div class="vocab-def">Banking services that help companies pay for imports and exports.</div>
-    </div>
-    <div class="vocab-card">
-      <div class="vocab-en">Mergers & Acquisitions (M&A)</div>
-      <div class="vocab-vn">= Mua bán & Sáp nhập</div>
-      <div class="vocab-def">When one company buys or merges with another. Investment banks advise on this.</div>
-    </div>
-    <div class="vocab-card">
-      <div class="vocab-en">Forex (Foreign Exchange)</div>
-      <div class="vocab-vn">= Ngoại hối / Đổi tiền tệ</div>
-      <div class="vocab-def">Converting one currency to another. E.g. VND → EUR.</div>
-    </div>
-
-    <div style="height:24px"></div>
-    <button class="btn-primary" onclick="startGame()">Ready — Start Game →</button>
-    <button class="btn-secondary" onclick="showScreen('screen-intro')">← Back</button>
+  <div class="stats-grid">
+    <div class="stat-box"><span class="stat-num">8</span><span class="stat-lbl">Questions</span></div>
+    <div class="stat-box"><span class="stat-num">20</span><span class="stat-lbl">Max pts each</span></div>
+    <div class="stat-box"><span class="stat-num">~6'</span><span class="stat-lbl">Total time</span></div>
   </div>
+  <div class="warn">⚠️ <strong>Fair play:</strong> Answers shuffle every game. Score is locked after finishing — no replaying to cheat.</div>
+  <p class="name-lbl">Your name (shown to teacher):</p>
+  <input class="name-inp" id="name-inp" type="text" placeholder="e.g. Nguyen Van A" maxlength="30"/>
+  <div class="spacer"></div>
+  <button class="btn btn-gold" onclick="tryStart()">Start Game →</button>
+  <button class="btn btn-ghost" onclick="showScreen('s-vocab')">📖 Study vocab first</button>
+</div>
 
-  <!-- ── TEACH ── -->
-  <div class="screen" id="screen-teach">
-    <div class="teach-header">
-      <div class="teach-step" id="teach-step-label">LESSON 1</div>
-      <div class="teach-progress">
-        <div class="teach-progress-fill" id="teach-progress-fill"></div>
-      </div>
-    </div>
+<!-- VOCAB -->
+<div class="screen" id="s-vocab">
+  <div class="teach-topbar"><div class="teach-badge">VOCAB GUIDE</div></div>
+  <div class="teach-cat">10 KEY TERMS</div>
+  <div class="teach-h1" style="margin-bottom:20px">Study Before Playing</div>
+  <div class="card"><div class="vocab-en">Central Bank</div><div class="vocab-vn">= Ngân hàng Trung ương</div><div class="vocab-def">Controls money supply, lends to banks in crisis, issues banknotes.</div></div>
+  <div class="card"><div class="vocab-en">Lender of Last Resort</div><div class="vocab-vn">= Người cho vay cuối cùng</div><div class="vocab-def">The Central Bank's emergency role — rescues banks when no one else will lend.</div></div>
+  <div class="card"><div class="vocab-en">Net Interest Margin (NIM)</div><div class="vocab-vn">= Biên lãi suất thuần</div><div class="vocab-def">Loan rate − Deposit rate = Bank's profit margin.</div></div>
+  <div class="card"><div class="vocab-en">Collateral</div><div class="vocab-vn">= Tài sản thế chấp</div><div class="vocab-def">An asset pledged to secure a loan (e.g. house, gold, vehicle).</div></div>
+  <div class="card"><div class="vocab-en">Fixed Deposit</div><div class="vocab-vn">= Tiết kiệm có kỳ hạn</div><div class="vocab-def">Money locked for a set period (e.g. 12 months) for a higher interest rate.</div></div>
+  <div class="card"><div class="vocab-en">Mortgage</div><div class="vocab-vn">= Vay mua nhà</div><div class="vocab-def">Long-term loan to buy property. The property is the collateral.</div></div>
+  <div class="card"><div class="vocab-en">SWIFT Transfer</div><div class="vocab-vn">= Chuyển tiền quốc tế</div><div class="vocab-def">Global system banks use to send money across countries.</div></div>
+  <div class="card"><div class="vocab-en">Trade Finance</div><div class="vocab-vn">= Tài trợ thương mại</div><div class="vocab-def">Banking services that help companies pay for imports and exports.</div></div>
+  <div class="card"><div class="vocab-en">M&A (Mergers & Acquisitions)</div><div class="vocab-vn">= Mua bán & Sáp nhập</div><div class="vocab-def">When one company buys or merges with another. Investment banks advise on this.</div></div>
+  <div class="card"><div class="vocab-en">Forex (Foreign Exchange)</div><div class="vocab-vn">= Ngoại hối</div><div class="vocab-def">Converting one currency to another. Spot = now. Forward = future rate locked today.</div></div>
+  <div class="spacer"></div>
+  <button class="btn btn-gold" onclick="showScreen('s-intro')">← Ready to play</button>
+</div>
 
-    <span class="teach-emoji" id="teach-emoji"></span>
-    <div class="teach-label" id="teach-label"></div>
-    <div class="teach-title" id="teach-title"></div>
-    <div class="teach-vn" id="teach-vn"></div>
-    <div class="teach-body" id="teach-body"></div>
-
-    <div id="teach-vocab-container"></div>
-
-    <div class="spacer"></div>
-    <button class="btn-primary" onclick="goToQuestion()">Got it — Test me →</button>
+<!-- TEACH -->
+<div class="screen" id="s-teach">
+  <div class="teach-topbar">
+    <div class="teach-badge" id="teach-badge">LESSON 1</div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
   </div>
+  <span class="teach-emoji" id="teach-emoji"></span>
+  <div class="teach-cat" id="teach-cat"></div>
+  <div class="teach-h1" id="teach-h1"></div>
+  <div class="teach-vn" id="teach-vn"></div>
+  <div class="teach-body" id="teach-body"></div>
+  <div id="teach-vocab"></div>
+  <div class="spacer"></div>
+  <button class="btn btn-gold" onclick="goQuestion()">Got it — Test me ⏱</button>
+</div>
 
-  <!-- ── QUESTION ── -->
-  <div class="screen" id="screen-question">
-    <div class="q-header">
-      <div class="q-counter" id="q-counter">Question 1 / 8</div>
-      <div class="q-score" id="q-score">⭐ 0</div>
-    </div>
-
-    <div class="q-scenario">
-      <div class="q-scenario-label">📋 Scenario</div>
-      <div class="q-scenario-text" id="q-scenario"></div>
-    </div>
-
-    <div class="q-question" id="q-question"></div>
-
-    <div class="choices" id="q-choices"></div>
+<!-- QUESTION -->
+<div class="screen" id="s-question">
+  <div class="q-topbar">
+    <div class="q-counter" id="q-counter">Q 1 / 8</div>
+    <div class="q-score-d" id="q-score-d">⭐ 0</div>
   </div>
+  <div class="timer-wrap">
+    <svg class="timer-svg" width="72" height="72" viewBox="0 0 72 72">
+      <circle class="timer-bg" cx="36" cy="36" r="30"/>
+      <circle class="timer-ring" id="timer-ring" cx="36" cy="36" r="30" stroke-dasharray="188.5" stroke-dashoffset="0"/>
+    </svg>
+    <div class="timer-num" id="timer-num">15</div>
+  </div>
+  <div class="speed-badge" id="speed-badge"></div>
+  <div class="scenario-box">
+    <div class="scenario-lbl">📋 Scenario</div>
+    <div class="scenario-txt" id="q-scenario"></div>
+  </div>
+  <div class="q-text" id="q-text"></div>
+  <div class="choices" id="q-choices"></div>
+</div>
 
-  <!-- ── END ── -->
-  <div class="screen" id="screen-end">
-    <div class="end-score-circle">
-      <div class="end-score-num" id="end-score-num">0</div>
-      <div class="end-score-label">points</div>
+<!-- END -->
+<div class="screen" id="s-end">
+  <div class="end-circle">
+    <div class="end-score-n" id="end-n">0</div>
+    <div class="end-score-l">points</div>
+  </div>
+  <div class="end-name" id="end-name"></div>
+  <div class="end-h1" id="end-h1"></div>
+  <p class="end-sub" id="end-sub"></p>
+  <div class="score-card">
+    <div class="sc-lbl">📊 Show this to your teacher</div>
+    <div class="sc-name" id="sc-name"></div>
+    <div class="sc-pts" id="sc-pts"></div>
+    <div class="sc-max" id="sc-max"></div>
+    <span class="sc-rank" id="sc-rank"></span>
+  </div>
+  <div class="vrc">
+    <div class="vrc-title">📚 Vocab Learned Today</div>
+    <div class="vr-row"><span class="vr-en">Central Bank</span><span class="vr-vn">Ngân hàng Trung ương</span></div>
+    <div class="vr-row"><span class="vr-en">Lender of Last Resort</span><span class="vr-vn">Người cho vay cuối cùng</span></div>
+    <div class="vr-row"><span class="vr-en">Net Interest Margin</span><span class="vr-vn">Biên lãi suất thuần</span></div>
+    <div class="vr-row"><span class="vr-en">Collateral</span><span class="vr-vn">Tài sản thế chấp</span></div>
+    <div class="vr-row"><span class="vr-en">Fixed Deposit</span><span class="vr-vn">Tiết kiệm có kỳ hạn</span></div>
+    <div class="vr-row"><span class="vr-en">Mortgage</span><span class="vr-vn">Vay mua nhà</span></div>
+    <div class="vr-row"><span class="vr-en">SWIFT Transfer</span><span class="vr-vn">Chuyển tiền quốc tế</span></div>
+    <div class="vr-row"><span class="vr-en">Trade Finance</span><span class="vr-vn">Tài trợ thương mại</span></div>
+    <div class="vr-row"><span class="vr-en">M&A</span><span class="vr-vn">Mua bán & Sáp nhập</span></div>
+    <div class="vr-row"><span class="vr-en">Forex</span><span class="vr-vn">Ngoại hối</span></div>
+  </div>
+  <div class="warn">🔒 Game locked. Show the score card above to your teacher before closing.</div>
+</div>
+
+<!-- LOCK -->
+<div class="screen" id="s-lock">
+  <div class="lock-body">
+    <span class="lock-icon">🔒</span>
+    <div class="lock-title">Already Played</div>
+    <p class="lock-sub">You've already completed this game. Your score is locked. Show it to the teacher — replaying is not allowed.</p>
+    <div class="score-card" style="width:100%">
+      <div class="sc-lbl">Your Final Score</div>
+      <div class="sc-name" id="lock-name"></div>
+      <div class="sc-pts" id="lock-pts"></div>
+      <div class="sc-max" id="lock-max"></div>
+      <span class="sc-rank" id="lock-rank"></span>
     </div>
-    <div class="end-title" id="end-title">Nice work!</div>
-    <div class="end-sub" id="end-sub">You completed Banking Tycoon.</div>
-
-    <div class="vocab-recap">
-      <div class="vocab-recap-title">📚 Vocab Learned Today</div>
-      <div class="vocab-row"><span class="vocab-row-en">Central Bank</span><span class="vocab-row-vn">Ngân hàng Trung ương</span></div>
-      <div class="vocab-row"><span class="vocab-row-en">Lender of Last Resort</span><span class="vocab-row-vn">Người cho vay cuối cùng</span></div>
-      <div class="vocab-row"><span class="vocab-row-en">Net Interest Margin</span><span class="vocab-row-vn">Biên lãi suất thuần</span></div>
-      <div class="vocab-row"><span class="vocab-row-en">Collateral</span><span class="vocab-row-vn">Tài sản thế chấp</span></div>
-      <div class="vocab-row"><span class="vocab-row-en">Fixed Deposit</span><span class="vocab-row-vn">Tiết kiệm có kỳ hạn</span></div>
-      <div class="vocab-row"><span class="vocab-row-en">Mortgage</span><span class="vocab-row-vn">Vay mua nhà</span></div>
-      <div class="vocab-row"><span class="vocab-row-en">SWIFT Transfer</span><span class="vocab-row-vn">Chuyển tiền quốc tế</span></div>
-      <div class="vocab-row"><span class="vocab-row-en">Trade Finance</span><span class="vocab-row-vn">Tài trợ thương mại</span></div>
-      <div class="vocab-row"><span class="vocab-row-en">M&A</span><span class="vocab-row-vn">Mua bán & Sáp nhập</span></div>
-      <div class="vocab-row"><span class="vocab-row-en">Forex</span><span class="vocab-row-vn">Ngoại hối</span></div>
-    </div>
-
-    <button class="btn-primary" onclick="restartGame()">Play Again 🔄</button>
-    <button class="btn-secondary" onclick="showScreen('screen-vocab')">📖 Review vocab</button>
   </div>
+</div>
 
-</div><!-- end .app -->
+</div><!-- .app -->
 
-<!-- Overlay + Result Popup -->
-<div class="overlay" id="overlay" onclick="nextQuestion()"></div>
-<div class="result-popup" id="result-popup">
-  <div class="result-verdict">
-    <span class="result-icon" id="result-icon"></span>
-    <span class="result-verdict-text" id="result-verdict-text"></span>
+<div class="overlay" id="overlay"></div>
+<div class="result-sheet" id="result-sheet">
+  <div class="rs-row">
+    <span class="rs-icon" id="rs-icon"></span>
+    <span class="rs-verdict" id="rs-verdict"></span>
+    <span class="rs-pts" id="rs-pts"></span>
   </div>
-  <div class="result-explain" id="result-explain"></div>
-  <div class="result-vocab" id="result-vocab-box">
-    <div class="result-vocab-label">💡 Vocab of the moment</div>
-    <div class="result-vocab-word" id="result-vocab-word"></div>
-    <div class="result-vocab-vn" id="result-vocab-vn"></div>
+  <p class="rs-explain" id="rs-explain"></p>
+  <div class="rs-vocab">
+    <div class="rsv-lbl">💡 Key vocab</div>
+    <div class="rsv-en" id="rsv-en"></div>
+    <div class="rsv-vn" id="rsv-vn"></div>
   </div>
-  <button class="btn-primary" onclick="nextQuestion()">Next →</button>
+  <button class="btn btn-gold" id="next-btn" onclick="nextQuestion()">Next →</button>
 </div>
 
 <script>
-const LESSONS = [
-  {
-    emoji: "🏛️",
-    label: "TYPE 1",
-    title: "The Central Bank",
-    vn: "Ngân hàng Trung ương",
-    body: "The Central Bank is the most powerful bank in a country. It does NOT serve regular customers. Instead, it controls the entire banking system — managing the money supply, rescuing other banks in crisis, and issuing the country's official banknotes.\n\nIn Vietnam: State Bank of Vietnam (SBV). In the US: The Federal Reserve (\"The Fed\").",
-    vocab: [
-      { en: "Lender of Last Resort", vn: "Người cho vay cuối cùng", def: "The Central Bank's emergency role. When a bank runs out of money, it borrows from the Central Bank." },
-    ]
-  },
-  {
-    emoji: "🏦",
-    label: "TYPE 2",
-    title: "The Commercial Bank",
-    vn: "Ngân hàng Thương mại",
-    body: "This is the bank most of us use every day. It accepts deposits from customers and gives out loans to borrowers. It earns profit from the gap between the two interest rates — this gap is called the Net Interest Margin (NIM).\n\nExamples: Vietcombank, BIDV, Techcombank.",
-    vocab: [
-      { en: "Net Interest Margin (NIM)", vn: "Biên lãi suất thuần", def: "Loan interest rate − Deposit interest rate = Bank profit." },
-      { en: "Collateral", vn: "Tài sản thế chấp", def: "An asset (e.g. your house) pledged to the bank to secure a loan." },
-    ]
-  },
-  {
-    emoji: "📈",
-    label: "TYPE 3",
-    title: "The Investment Bank",
-    vn: "Ngân hàng Đầu tư",
-    body: "Investment banks do NOT take deposits from regular people. They help large companies and governments raise money — by issuing stocks or bonds on financial markets. They also advise on Mergers & Acquisitions (M&A): when one company buys another.\n\nExamples: Goldman Sachs, Morgan Stanley, JP Morgan.",
-    vocab: [
-      { en: "Mergers & Acquisitions (M&A)", vn: "Mua bán & Sáp nhập", def: "When one company buys or merges with another. Investment banks advise both sides." },
-    ]
-  },
-  {
-    emoji: "💳",
-    label: "TYPES 4 & 5",
-    title: "Retail & Corporate Banks",
-    vn: "Ngân hàng Bán lẻ & Doanh nghiệp",
-    body: "A Retail Bank serves individual customers — savings accounts, personal loans, mortgages (vay mua nhà), credit cards.\n\nA Corporate Bank serves businesses — large business loans, trade finance for imports and exports, cash management.\n\nMany big banks (like Vietcombank) are BOTH retail and commercial.",
-    vocab: [
-      { en: "Mortgage", vn: "Vay mua nhà", def: "A long-term loan to buy a house. The house is the collateral." },
-      { en: "Trade Finance", vn: "Tài trợ thương mại", def: "Banking services that help companies pay for international imports and exports." },
-    ]
-  },
-  {
-    emoji: "💰",
-    label: "FUNCTION 1",
-    title: "Accepting Deposits",
-    vn: "Nhận tiền gửi",
-    body: "When you put money in the bank, it keeps your money safe and pays you interest. There are two main types:\n\n• Savings Account: Withdraw anytime. Lower interest rate.\n• Fixed Deposit: Lock money for 6–12 months. Higher interest rate because the bank can use your money longer.",
-    vocab: [
-      { en: "Fixed Deposit", vn: "Tiết kiệm có kỳ hạn", def: "Money locked in the bank for a fixed period (e.g. 12 months) at a higher interest rate." },
-    ]
-  },
-  {
-    emoji: "🤝",
-    label: "FUNCTION 2",
-    title: "Lending Money",
-    vn: "Cho vay",
-    body: "The bank does not just store your deposits. It lends that money out to other customers at a higher interest rate. Types of loans: personal loans, mortgages, and business loans.\n\nThe bank's profit = NIM = the gap between the loan rate it charges and the deposit rate it pays.",
-    vocab: [
-      { en: "Net Interest Margin", vn: "Biên lãi suất thuần", def: "E.g. Bank charges 9% on loans, pays 4% on deposits → NIM = 5% profit." },
-    ]
-  },
-  {
-    emoji: "📲",
-    label: "FUNCTION 3",
-    title: "Payment Services",
-    vn: "Dịch vụ thanh toán",
-    body: "Banks allow money to move easily — locally and globally. Services include: bank transfers, international SWIFT transfers, bill payments through apps, and debit/credit card payments.\n\nWithout this function, businesses cannot pay suppliers. Employees cannot receive salaries. The economy stops.",
-    vocab: [
-      { en: "SWIFT Transfer", vn: "Chuyển tiền quốc tế", def: "The global network banks use to send money across countries." },
-    ]
-  },
-  {
-    emoji: "💱",
-    label: "FUNCTION 4",
-    title: "Currency Exchange — Forex",
-    vn: "Ngoại hối",
-    body: "When a Vietnamese company imports goods from Germany, it needs Euros — not Vietnamese Dong. The bank converts the currency.\n\n• Spot transaction: Exchange currency today at today's rate.\n• Forward transaction: Agree on a rate today for a future exchange — protects businesses from exchange rate risk.",
-    vocab: [
-      { en: "Forex (Foreign Exchange)", vn: "Ngoại hối", def: "The business of converting one currency to another. Banks offer spot and forward transactions." },
-    ]
-  }
+const LESSONS=[
+  {emoji:"🏛️",cat:"TYPE 1",title:"The Central Bank",vn:"Ngân hàng Trung ương",
+   body:"The Central Bank is the most powerful bank in a country. It does NOT serve regular customers. Instead, it controls the whole banking system — managing the money supply, rescuing other banks in a crisis, and issuing the country's official banknotes.\n\nIn Vietnam: State Bank of Vietnam (SBV). In the US: The Federal Reserve.",
+   vocab:[{en:"Lender of Last Resort",vn:"Người cho vay cuối cùng",def:"The Central Bank's emergency role. When a bank runs out of money and no one else will lend, it turns to the Central Bank."}]},
+  {emoji:"🏦",cat:"TYPE 2",title:"The Commercial Bank",vn:"Ngân hàng Thương mại",
+   body:"This is the bank most of us use every day. It accepts deposits and gives out loans. It earns profit from the difference between the two interest rates — this gap is called the Net Interest Margin (NIM).\n\nExamples: Vietcombank, BIDV, Techcombank.",
+   vocab:[
+     {en:"Net Interest Margin (NIM)",vn:"Biên lãi suất thuần",def:"Loan rate − Deposit rate = Bank profit. E.g. 9% − 4% = 5% NIM."},
+     {en:"Collateral",vn:"Tài sản thế chấp",def:"An asset pledged to secure a loan. If you can't repay, the bank takes it."}
+   ]},
+  {emoji:"📈",cat:"TYPE 3",title:"The Investment Bank",vn:"Ngân hàng Đầu tư",
+   body:"Investment banks do NOT take deposits from regular people. They help large companies and governments raise money by issuing stocks or bonds, and advise on Mergers & Acquisitions (M&A) — when one company buys another.\n\nExamples: Goldman Sachs, Morgan Stanley, JP Morgan.",
+   vocab:[{en:"M&A (Mergers & Acquisitions)",vn:"Mua bán & Sáp nhập",def:"When one company buys or merges with another. Investment banks advise both sides."}]},
+  {emoji:"💳",cat:"TYPES 4 & 5",title:"Retail & Corporate Banks",vn:"Ngân hàng Bán lẻ & Doanh nghiệp",
+   body:"A Retail Bank serves individual customers — savings accounts, mortgages, credit cards.\n\nA Corporate Bank serves businesses — large loans, trade finance for imports/exports, cash management.\n\nMany large banks like Vietcombank do both at the same time.",
+   vocab:[
+     {en:"Mortgage",vn:"Vay mua nhà",def:"A long-term loan to buy a house. The house is the collateral."},
+     {en:"Trade Finance",vn:"Tài trợ thương mại",def:"Banking services that help companies pay for international imports and exports."}
+   ]},
+  {emoji:"💰",cat:"FUNCTION 1",title:"Accepting Deposits",vn:"Nhận tiền gửi",
+   body:"When you put money in the bank, it keeps it safe and pays you interest.\n\n• Savings account: withdraw anytime, lower rate.\n• Fixed deposit: lock money for 6–12 months, higher rate because the bank can use it longer.",
+   vocab:[{en:"Fixed Deposit",vn:"Tiết kiệm có kỳ hạn",def:"Money locked for a fixed period at a higher rate. E.g. Vietcombank 12 months ≈ 4.7%/year."}]},
+  {emoji:"🤝",cat:"FUNCTION 2",title:"Lending Money",vn:"Cho vay",
+   body:"The bank lends your deposits out to other customers at a higher rate — personal loans, mortgages, business loans.\n\nProfit = NIM = the gap between the loan rate charged and the deposit rate paid.",
+   vocab:[{en:"Net Interest Margin",vn:"Biên lãi suất thuần",def:"E.g. charges 9% on loans, pays 4% on deposits → 5% NIM = profit."}]},
+  {emoji:"📲",cat:"FUNCTION 3",title:"Payment Services",vn:"Dịch vụ thanh toán",
+   body:"Banks allow money to move locally and globally: bank transfers, SWIFT transfers, bill payments, card payments.\n\nWithout this function, businesses can't pay suppliers and employees can't receive salaries.",
+   vocab:[{en:"SWIFT Transfer",vn:"Chuyển tiền quốc tế",def:"The global network banks use to send money across countries."}]},
+  {emoji:"💱",cat:"FUNCTION 4",title:"Currency Exchange — Forex",vn:"Ngoại hối",
+   body:"When a Vietnamese company imports from Germany it needs Euros, not VND. The bank converts the currency.\n\n• Spot: exchange at today's rate, immediately.\n• Forward: agree on a rate today for a future exchange — protects against exchange rate risk.",
+   vocab:[{en:"Forex (Foreign Exchange)",vn:"Ngoại hối",def:"Converting one currency to another. Spot = now. Forward = future, rate locked today."}]}
 ];
 
-const QUESTIONS = [
-  {
-    lessonIndex: 0,
-    scenario: "Inflation in Vietnam is rising fast. Prices of food and petrol are going up every week. The government needs someone to take action immediately.",
-    question: "Which institution should step in to control the money supply?",
-    choices: ["Vietcombank (Commercial Bank)", "State Bank of Vietnam (Central Bank)", "Goldman Sachs (Investment Bank)", "A Retail Bank"],
-    correct: 1,
-    explain: "The Central Bank (State Bank of Vietnam) controls the money supply. It can raise interest rates to slow down inflation. This is one of its three main responsibilities.",
-    vocabWord: "Central Bank", vocabVn: "Ngân hàng Trung ương"
-  },
-  {
-    lessonIndex: 0,
-    scenario: "VietBank is in serious trouble. It has run out of cash and cannot pay its customers. No other private bank will lend to it because it is too risky.",
-    question: "Where is VietBank's last option to borrow emergency money?",
-    choices: ["Goldman Sachs", "Another commercial bank", "The State Bank of Vietnam", "A corporate bank"],
-    correct: 2,
-    explain: "The Central Bank acts as the 'Lender of Last Resort.' When no one else will lend, the Central Bank steps in to rescue the banking system from collapsing.",
-    vocabWord: "Lender of Last Resort", vocabVn: "Người cho vay cuối cùng"
-  },
-  {
-    lessonIndex: 1,
-    scenario: "Minh deposits 100 million VND at Vietcombank at 4.7% per year. The bank immediately lends that money to a business at 9.5% per year.",
-    question: "What do we call the gap between these two interest rates?",
-    choices: ["Fixed Deposit Rate", "Net Interest Margin (NIM)", "SWIFT Fee", "Exchange Rate"],
-    correct: 1,
-    explain: "Net Interest Margin (NIM) = Loan rate − Deposit rate = 9.5% − 4.7% = 4.8%. This is the bank's main source of profit. The wider the NIM, the more profitable the bank.",
-    vocabWord: "Net Interest Margin (NIM)", vocabVn: "Biên lãi suất thuần"
-  },
-  {
-    lessonIndex: 1,
-    scenario: "Lan wants to borrow 500 million VND from the bank to open a coffee shop. The bank agrees, but asks her to pledge her motorbike and some gold as security in case she cannot repay.",
-    question: "What is the motorbike and gold called in banking terms?",
-    choices: ["Fixed Deposit", "Collateral", "Trade Finance", "NIM"],
-    correct: 1,
-    explain: "Collateral (tài sản thế chấp) is an asset pledged to the bank to secure a loan. If Lan cannot repay, the bank takes the collateral. Common examples: houses, cars, gold, land.",
-    vocabWord: "Collateral", vocabVn: "Tài sản thế chấp"
-  },
-  {
-    lessonIndex: 2,
-    scenario: "A large Vietnamese tech company called VietTech wants to raise 500 billion VND by selling shares to investors on the stock market. They need expert advice and a bank to manage the whole process.",
-    question: "Which type of bank should VietTech go to?",
-    choices: ["Retail Bank", "Central Bank", "Investment Bank", "Corporate Bank"],
-    correct: 2,
-    explain: "Investment Banks help companies raise money by issuing stocks (cổ phiếu) or bonds (trái phiếu) on financial markets. They manage the IPO process and advise on pricing. Goldman Sachs, JP Morgan, and Morgan Stanley are famous examples.",
-    vocabWord: "Investment Bank", vocabVn: "Ngân hàng Đầu tư"
-  },
-  {
-    lessonIndex: 3,
-    scenario: "A factory in Ho Chi Minh City regularly imports steel from South Korea. Every month, they need to make large international payments to their Korean supplier in Korean Won.",
-    question: "Which banking service does this factory most need?",
-    choices: ["Mortgage", "Fixed Deposit", "Trade Finance + Forex", "Personal loan"],
-    correct: 2,
-    explain: "Trade Finance helps companies handle international payments for imports and exports. Combined with Forex (foreign exchange), the bank converts VND → KRW and manages the payment. This is a Corporate Bank's specialty.",
-    vocabWord: "Trade Finance", vocabVn: "Tài trợ thương mại"
-  },
-  {
-    lessonIndex: 6,
-    scenario: "Hùng lives in Vietnam. His brother works in Japan and wants to send him 2,000 USD. The money needs to cross country borders, passing through the international banking system.",
-    question: "What is the system used for international bank transfers called?",
-    choices: ["Forex Spot", "SWIFT Transfer", "Fixed Deposit", "M&A"],
-    correct: 1,
-    explain: "SWIFT (Society for Worldwide Interbank Financial Telecommunication) is the global network that banks use to communicate and transfer money internationally. Almost every international bank transfer uses SWIFT.",
-    vocabWord: "SWIFT Transfer", vocabVn: "Chuyển tiền quốc tế"
-  },
-  {
-    lessonIndex: 7,
-    scenario: "A Vietnamese company will import Italian wine worth €200,000 in 3 months. They are worried that the EUR/VND exchange rate might move against them between now and then.",
-    question: "Which Forex product locks in today's rate for a future transaction?",
-    choices: ["Spot transaction", "Fixed Deposit", "Forward transaction", "SWIFT transfer"],
-    correct: 2,
-    explain: "A Forward transaction lets you agree on an exchange rate today for a transaction that happens in the future. This protects businesses from exchange rate risk (rủi ro tỷ giá). A Spot transaction, by contrast, exchanges currency immediately at today's rate.",
-    vocabWord: "Forward Transaction", vocabVn: "Giao dịch kỳ hạn (khóa tỷ giá)"
-  }
+const QB=[
+  {li:0,scenario:"Inflation in Vietnam is rising fast. Food and petrol prices increase every week. The government needs swift action to control the money supply.",q:"Which institution has the authority to step in and control the money supply?",choices:["Vietcombank (Commercial Bank)","State Bank of Vietnam (Central Bank)","Goldman Sachs (Investment Bank)","A Retail Bank"],correct:1,explain:"The Central Bank (State Bank of Vietnam) controls the money supply. It can raise interest rates to slow inflation — one of its three core responsibilities.",vw:"Central Bank",vv:"Ngân hàng Trung ương"},
+  {li:0,scenario:"AlphaBank (a fictional commercial bank) faces a severe liquidity crisis. It has run out of cash and cannot fulfil withdrawals. Interbank markets are frozen — no private bank will lend to it.",q:"Where is AlphaBank's absolute last resort for emergency liquidity?",choices:["Goldman Sachs","Another commercial bank","The State Bank of Vietnam (SBV)","A corporate bank"],correct:2,explain:"The Central Bank acts as 'Lender of Last Resort.' When interbank markets fail, the Central Bank injects emergency liquidity to prevent a systemic collapse.",vw:"Lender of Last Resort",vv:"Người cho vay cuối cùng"},
+  {li:1,scenario:"Minh deposits 100 million VND at Vietcombank at 4.7% per year. The bank immediately lends that money to a business at 9.5% per year.",q:"What do we call the gap between these two interest rates?",choices:["Fixed Deposit Rate","Net Interest Margin (NIM)","SWIFT Fee","Exchange Rate"],correct:1,explain:"Net Interest Margin (NIM) = Loan rate − Deposit rate = 9.5% − 4.7% = 4.8%. This is the bank's main source of profit.",vw:"Net Interest Margin (NIM)",vv:"Biên lãi suất thuần"},
+  {li:1,scenario:"Lan wants to borrow 500 million VND from BIDV to open a coffee shop. The bank agrees but requires her to pledge her house as security in case she cannot repay.",q:"What is the house called in banking terms?",choices:["Fixed Deposit","Collateral","Trade Finance","NIM"],correct:1,explain:"Collateral (tài sản thế chấp) is an asset pledged to secure a loan. If Lan cannot repay, the bank has the legal right to take it.",vw:"Collateral",vv:"Tài sản thế chấp"},
+  {li:2,scenario:"A large Vietnamese tech company wants to raise 500 billion VND by selling shares to the public on the stock market. They need expert advice and someone to manage the entire issuance.",q:"Which type of bank should they go to?",choices:["Retail Bank","Central Bank","Investment Bank","Corporate Bank"],correct:2,explain:"Investment Banks help companies raise money by issuing stocks or bonds. They manage the process and advise on pricing. Examples: Goldman Sachs, JP Morgan.",vw:"Investment Bank",vv:"Ngân hàng Đầu tư"},
+  {li:3,scenario:"A factory in Ho Chi Minh City regularly imports steel from South Korea. Every month they need to make large payments to their Korean supplier in Korean Won (KRW).",q:"Which banking service does this factory most need?",choices:["Mortgage","Fixed Deposit","Trade Finance + Forex","Personal loan"],correct:2,explain:"Trade Finance handles international payments for imports/exports. Combined with Forex (VND → KRW), this is the corporate bank's specialty.",vw:"Trade Finance",vv:"Tài trợ thương mại"},
+  {li:6,scenario:"Hùng lives in Vietnam. His brother works in Japan and wants to send him ¥500,000. The money must travel across country borders through the international banking network.",q:"What global system do banks use for international transfers?",choices:["Forex Spot","SWIFT Transfer","Fixed Deposit","M&A"],correct:1,explain:"SWIFT (Society for Worldwide Interbank Financial Telecommunication) is the global network banks use to send money internationally. Nearly every international payment uses SWIFT.",vw:"SWIFT Transfer",vv:"Chuyển tiền quốc tế"},
+  {li:7,scenario:"A Vietnamese company will import Italian wine worth €200,000 in 3 months. They are worried the EUR/VND exchange rate might move against them before payment.",q:"Which Forex product locks in today's rate for a future transaction?",choices:["Spot transaction","Fixed Deposit","Forward transaction","SWIFT transfer"],correct:2,explain:"A Forward transaction lets you agree on an exchange rate today for a future payment — protecting businesses from exchange rate risk. A Spot transaction exchanges currency right now.",vw:"Forward Transaction",vv:"Giao dịch kỳ hạn (khóa tỷ giá)"}
 ];
 
-let currentQ = 0;
-let score = 0;
-let answered = false;
+const TIMER=15, MAX_PER_Q=20;
+let playerName='', questions=[], curQ=0, score=0, timerIv=null, timeLeft=TIMER, answered=false, qStart=0;
+const SK='bt_v2';
 
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function buildQ(){
+  return shuffle(QB).map(q=>{
+    const idx=q.choices.map((c,i)=>({t:c,o:i}));
+    const sh=shuffle(idx);
+    return{...q,choices:sh.map(x=>x.t),correct:sh.findIndex(x=>x.o===q.correct)};
+  });
 }
 
-function startGame() {
-  currentQ = 0;
-  score = 0;
+function save(n,p,m){try{sessionStorage.setItem(SK,JSON.stringify({n,p,m}));}catch(e){}}
+function load(){try{const d=sessionStorage.getItem(SK);return d?JSON.parse(d):null;}catch(e){return null;}}
+
+function getRank(p,m){
+  const r=p/m;
+  if(r===1)return'🏆 Perfect Score';
+  if(r>=0.85)return'🥇 Banking Expert';
+  if(r>=0.65)return'🥈 Rising Analyst';
+  if(r>=0.4)return'🥉 Junior Trainee';
+  return'📚 Keep studying!';
+}
+
+function tryStart(){
+  const ex=load();
+  if(ex){showLock(ex);return;}
+  playerName=document.getElementById('name-inp').value.trim()||'Anonymous';
+  questions=buildQ();
+  curQ=0;score=0;
   showLesson(0);
 }
 
-function restartGame() {
-  startGame();
+function showLock(d){
+  const max=QB.length*MAX_PER_Q;
+  document.getElementById('lock-name').textContent=d.n;
+  document.getElementById('lock-pts').textContent=d.p;
+  document.getElementById('lock-max').textContent=`out of ${d.m} pts`;
+  document.getElementById('lock-rank').textContent=getRank(d.p,d.m);
+  showScreen('s-lock');
 }
 
-function showLesson(qIndex) {
-  const q = QUESTIONS[qIndex];
-  const lesson = LESSONS[q.lessonIndex];
-  const totalLessons = QUESTIONS.length;
-
-  document.getElementById('teach-step-label').textContent = `LESSON ${qIndex + 1}`;
-  document.getElementById('teach-progress-fill').style.width = `${((qIndex) / totalLessons) * 100}%`;
-  document.getElementById('teach-emoji').textContent = lesson.emoji;
-  document.getElementById('teach-label').textContent = lesson.label;
-  document.getElementById('teach-title').textContent = lesson.title;
-  document.getElementById('teach-vn').textContent = lesson.vn;
-  document.getElementById('teach-body').textContent = lesson.body;
-
-  const vc = document.getElementById('teach-vocab-container');
-  vc.innerHTML = '';
-  lesson.vocab.forEach(v => {
-    vc.innerHTML += `<div class="vocab-card">
-      <div class="vocab-en">${v.en}</div>
-      <div class="vocab-vn">= ${v.vn}</div>
-      <div class="vocab-def">${v.def}</div>
-    </div>`;
-  });
-
-  showScreen('screen-teach');
+function showLesson(qi){
+  const q=questions[qi], L=LESSONS[q.li];
+  document.getElementById('teach-badge').textContent=`LESSON ${qi+1}`;
+  document.getElementById('prog-fill').style.width=(qi/questions.length*100)+'%';
+  document.getElementById('teach-emoji').textContent=L.emoji;
+  document.getElementById('teach-cat').textContent=L.cat;
+  document.getElementById('teach-h1').textContent=L.title;
+  document.getElementById('teach-vn').textContent=L.vn;
+  document.getElementById('teach-body').textContent=L.body;
+  document.getElementById('teach-vocab').innerHTML=L.vocab.map(v=>`<div class="card"><div class="vocab-en">${v.en}</div><div class="vocab-vn">= ${v.vn}</div><div class="vocab-def">${v.def}</div></div>`).join('');
+  showScreen('s-teach');
 }
 
-function goToQuestion() {
-  renderQuestion(currentQ);
-  showScreen('screen-question');
+function goQuestion(){
+  renderQ(curQ);
+  showScreen('s-question');
+  startTimer();
 }
 
-function renderQuestion(qIndex) {
-  const q = QUESTIONS[qIndex];
-  answered = false;
-
-  document.getElementById('q-counter').textContent = `Question ${qIndex + 1} / ${QUESTIONS.length}`;
-  document.getElementById('q-score').textContent = `⭐ ${score}`;
-  document.getElementById('q-scenario').textContent = q.scenario;
-  document.getElementById('q-question').textContent = q.question;
-
-  const choicesEl = document.getElementById('q-choices');
-  choicesEl.innerHTML = '';
-  const letters = ['A','B','C','D'];
-  q.choices.forEach((c, i) => {
-    choicesEl.innerHTML += `
-      <button class="choice-btn" onclick="selectAnswer(${i})" id="choice-${i}">
-        <div class="choice-letter">${letters[i]}</div>
-        <div class="choice-text">${c}</div>
-      </button>`;
-  });
+function renderQ(qi){
+  const q=questions[qi];
+  answered=false;qStart=Date.now();
+  document.getElementById('q-counter').textContent=`Q ${qi+1} / ${questions.length}`;
+  document.getElementById('q-score-d').textContent=`⭐ ${score}`;
+  document.getElementById('q-scenario').textContent=q.scenario;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('speed-badge').className='speed-badge';
+  const L=['A','B','C','D'];
+  document.getElementById('q-choices').innerHTML=q.choices.map((c,i)=>`<button class="choice" onclick="pick(${i})" id="ch${i}"><div class="ch-letter">${L[i]}</div><div class="ch-txt">${c}</div></button>`).join('');
 }
 
-function selectAnswer(index) {
-  if (answered) return;
-  answered = true;
+function startTimer(){
+  clearInterval(timerIv);timeLeft=TIMER;updateTimer(TIMER);
+  timerIv=setInterval(()=>{timeLeft--;updateTimer(timeLeft);if(timeLeft<=0){clearInterval(timerIv);expire();}},1000);
+}
 
-  const q = QUESTIONS[currentQ];
-  const isCorrect = index === q.correct;
-  if (isCorrect) score += 10;
+function updateTimer(t){
+  const ring=document.getElementById('timer-ring'),num=document.getElementById('timer-num');
+  ring.style.strokeDashoffset=188.5*(1-t/TIMER);
+  num.textContent=t;
+  const c=t<=5?'var(--red)':t<=8?'var(--orange)':'var(--gold)';
+  ring.style.stroke=c;num.style.color=t<=5?'var(--red)':t<=8?'var(--orange)':'var(--text)';
+}
 
-  // Style buttons
-  document.querySelectorAll('.choice-btn').forEach((btn, i) => {
-    btn.classList.add('disabled');
-    if (i === q.correct) btn.classList.add('correct');
-    else if (i === index && !isCorrect) btn.classList.add('wrong');
-  });
+function expire(){
+  if(answered)return;answered=true;
+  document.getElementById('s-question').classList.add('timeout-flash');
+  setTimeout(()=>document.getElementById('s-question').classList.remove('timeout-flash'),400);
+  const q=questions[curQ];
+  document.querySelectorAll('.choice').forEach((b,i)=>{b.classList.add('disabled');if(i===q.correct)b.classList.add('correct');});
+  showResult(false,0,true);
+}
 
-  // Show result popup
-  document.getElementById('result-icon').textContent = isCorrect ? '✅' : '❌';
-  const vt = document.getElementById('result-verdict-text');
-  vt.textContent = isCorrect ? 'Correct!' : 'Not quite...';
-  vt.className = 'result-verdict-text ' + (isCorrect ? 'correct' : 'wrong');
-  document.getElementById('result-explain').textContent = q.explain;
-  document.getElementById('result-vocab-word').textContent = q.vocabWord;
-  document.getElementById('result-vocab-vn').textContent = '= ' + q.vocabVn;
+function pick(i){
+  if(answered)return;answered=true;clearInterval(timerIv);
+  const q=questions[curQ],ok=i===q.correct;
+  const elapsed=(Date.now()-qStart)/1000;
+  let pts=0;
+  if(ok){
+    const speed=Math.round(Math.max(0,(TIMER-elapsed)/TIMER)*10);
+    pts=10+speed;score+=pts;
+    const sb=document.getElementById('speed-badge');
+    sb.textContent=speed>=8?`⚡ Speed bonus +${speed} — lightning fast!`:speed>=5?`⚡ Speed bonus +${speed}`:speed>0?`⚡ Speed bonus +${speed}`:`✅ Correct! (+10 base)`;
+    sb.classList.add('show');
+  }
+  document.querySelectorAll('.choice').forEach((b,j)=>{b.classList.add('disabled');if(j===q.correct)b.classList.add('correct');else if(j===i&&!ok)b.classList.add('wrong');});
+  showResult(ok,pts,false);
+}
 
+function showResult(ok,pts,timeout){
+  const q=questions[curQ];
+  document.getElementById('rs-icon').textContent=timeout?'⏰':ok?'✅':'❌';
+  const rv=document.getElementById('rs-verdict');
+  rv.textContent=timeout?'Time\'s up!':ok?'Correct!':'Not quite...';
+  rv.className='rs-verdict '+(ok?'ok':'bad');
+  document.getElementById('rs-pts').textContent=pts>0?`+${pts} pts`:'';
+  document.getElementById('rs-explain').textContent=q.explain;
+  document.getElementById('rsv-en').textContent=q.vw;
+  document.getElementById('rsv-vn').textContent='= '+q.vv;
+  document.getElementById('next-btn').textContent=curQ>=questions.length-1?'See my score →':'Next →';
   document.getElementById('overlay').classList.add('show');
-  document.getElementById('result-popup').classList.add('show');
+  document.getElementById('result-sheet').classList.add('show');
 }
 
-function nextQuestion() {
+function nextQuestion(){
   document.getElementById('overlay').classList.remove('show');
-  document.getElementById('result-popup').classList.remove('show');
-
-  currentQ++;
-  if (currentQ >= QUESTIONS.length) {
-    showEndScreen();
-  } else {
-    showLesson(currentQ);
-  }
+  document.getElementById('result-sheet').classList.remove('show');
+  curQ++;
+  if(curQ>=questions.length)endGame();
+  else showLesson(curQ);
 }
 
-function showEndScreen() {
-  const total = QUESTIONS.length * 10;
-  const pct = Math.round((score / total) * 100);
-
-  document.getElementById('end-score-num').textContent = score;
-
-  let title, sub;
-  if (pct === 100) {
-    title = "Perfect Score! 🏆";
-    sub = "You nailed every question. You clearly understand how banks work — and you know the vocab to prove it.";
-  } else if (pct >= 70) {
-    title = "Great job! 💪";
-    sub = `You scored ${score}/${total}. Review the vocab list below and try again to get a perfect score!`;
-  } else if (pct >= 40) {
-    title = "Good start! 📚";
-    sub = `You scored ${score}/${total}. Study the vocab guide and play again — you'll do better next time!`;
-  } else {
-    title = "Keep practicing! 🌱";
-    sub = `You scored ${score}/${total}. Hit 'Review vocab' below to study the key terms, then try again.`;
-  }
-
-  document.getElementById('end-title').textContent = title;
-  document.getElementById('end-sub').textContent = sub;
-  showScreen('screen-end');
+function endGame(){
+  const max=questions.length*MAX_PER_Q,pct=score/max;
+  save(playerName,score,max);
+  document.getElementById('end-n').textContent=score;
+  document.getElementById('end-name').textContent=playerName;
+  const h=pct===1?'Perfect! 🏆':pct>=0.85?'Banking Expert! 🥇':pct>=0.65?'Great job! 🥈':pct>=0.4?'Good start! 🥉':'Keep going! 📚';
+  const s=pct===1?'Every question correct AND fast. Incredible!':pct>=0.65?`${score}/${max} pts. You clearly understand how banks work.`:`${score}/${max} pts. Review the vocab below and try again!`;
+  document.getElementById('end-h1').textContent=h;
+  document.getElementById('end-sub').textContent=s;
+  document.getElementById('sc-name').textContent=playerName;
+  document.getElementById('sc-pts').textContent=score;
+  document.getElementById('sc-max').textContent=`out of ${max} pts`;
+  document.getElementById('sc-rank').textContent=getRank(score,max);
+  showScreen('s-end');
 }
 </script>
 </body>
