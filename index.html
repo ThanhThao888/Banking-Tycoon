@@ -1,1103 +1,235 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Banking Tycoon 2.0 💼</title>
+<title>Banking Tycoon 2.0 – Bài 3.1 💼</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
-
 :root{
---bg:#0f1419; 
---surface:#1a1f2e; 
---s2:#252b3d; 
---s3:#2d3447;
---border:#2a3142; 
---border2:#3a4259;
---navy:#60a5fa; 
---blue:#3b82f6; 
---blue2:#2563eb;
---green:#10b981; 
---greenbg:#064e3b; 
---greenborder:#059669;
---red:#ef4444; 
---redbg:#7f1d1d; 
---redborder:#dc2626;
---orange:#f59e0b; 
---orangebg:#78350f; 
---gold:#fbbf24;
---text:#f1f5f9; 
---text2:#94a3b8; 
---muted:#64748b;
+--bg:#0f1419; --surface:#1a1f2e; --s2:#252b3d; --s3:#2d3447;
+--border:#2a3142; --border2:#3a4259;
+--navy:#60a5fa; --blue:#3b82f6; --blue2:#2563eb;
+--green:#10b981; --greenbg:#064e3b; --greenborder:#059669;
+--red:#ef4444; --redbg:#7f1d1d; --redborder:#dc2626;
+--orange:#f59e0b; --orangebg:#78350f; --gold:#fbbf24;
+--text:#f1f5f9; --text2:#94a3b8; --muted:#64748b;
 --shadow:0 8px 32px rgba(0,0,0,0.4);
 --glow:0 0 20px rgba(59,130,246,0.3);
 }
-
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-
 body{
 background:linear-gradient(135deg,#0f1419 0%,#1a1f2e 100%);
-color:var(--text);
-font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-min-height:100vh;
-display:flex;
-justify-content:center;
+color:var(--text); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+min-height:100vh; display:flex; justify-content:center;
 }
-
 .app{width:100%;max-width:480px;min-height:100vh;}
-
-.screen{
-display:none;
-flex-direction:column;
-min-height:100vh;
-padding:24px 20px 60px;
-animation:fadeUp .4s cubic-bezier(0.16,1,0.3,1);
-}
-
+.screen{ display:none; flex-direction:column; min-height:100vh; padding:24px 20px 60px; animation:fadeUp .4s cubic-bezier(0.16,1,0.3,1); }
 .screen.active{display:flex;}
-
-@keyframes fadeUp{
-from{opacity:0;transform:translateY(20px)}
-to{opacity:1;transform:translateY(0)}
-}
-
-/* Buttons */
+@keyframes fadeUp{ from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 .btn{
-border:none;
-border-radius:16px;
-padding:16px 24px;
-font-family:'Inter',sans-serif;
-font-size:15px;
-font-weight:600;
-cursor:pointer;
-width:100%;
-transition:all .2s;
+border:none; border-radius:16px; padding:16px 24px; font-family:'Inter',sans-serif;
+font-size:15px; font-weight:600; cursor:pointer; width:100%; transition:all .2s;
 }
-
 .btn:active{transform:scale(.98);}
-
-.btn-blue{
-background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 100%);
-color:#fff;
-font-weight:700;
-box-shadow:0 4px 20px rgba(59,130,246,0.4);
-}
-
-.btn-blue:hover{
-box-shadow:0 6px 30px rgba(59,130,246,0.5);
-transform:translateY(-2px);
-}
-
-.btn-ghost{
-background:var(--surface);
-color:var(--text2);
-border:2px solid var(--border2);
-margin-top:12px;
-}
-
-.btn-danger{
-background:linear-gradient(135deg,var(--red) 0%,var(--redborder) 100%);
-color:#fff;
-font-weight:700;
-box-shadow:0 4px 20px rgba(239,68,68,0.4);
-}
-
-.btn-outline{
-background:transparent;
-color:var(--blue);
-border:2px solid var(--blue);
-font-weight:700;
-}
-
-/* Cards */
-.card{
-background:var(--surface);
-border:1px solid var(--border);
-border-radius:20px;
-padding:20px;
-margin-bottom:12px;
-box-shadow:var(--shadow);
-}
-
+.btn-blue{ background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 100%); color:#fff; font-weight:700; box-shadow:0 4px 20px rgba(59,130,246,0.4); }
+.btn-blue:hover{ box-shadow:0 6px 30px rgba(59,130,246,0.5); transform:translateY(-2px); }
+.btn-ghost{ background:var(--surface); color:var(--text2); border:2px solid var(--border2); margin-top:12px; }
+.btn-danger{ background:linear-gradient(135deg,var(--red) 0%,var(--redborder) 100%); color:#fff; font-weight:700; box-shadow:0 4px 20px rgba(239,68,68,0.4); }
+.btn-outline{ background:transparent; color:var(--blue); border:2px solid var(--blue); font-weight:700; }
+.card{ background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:20px; margin-bottom:12px; box-shadow:var(--shadow); }
 .spacer{flex:1;min-height:20px;}
 
-/* Intro Screen */
-.intro-mark{
-font-size:64px;
-margin-top:40px;
-display:block;
-margin-bottom:12px;
-filter:drop-shadow(0 0 20px rgba(59,130,246,0.5));
-}
-
-.intro-title{
-font-family:'Playfair Display',serif;
-font-size:38px;
-font-weight:700;
-color:var(--text);
-line-height:1.1;
-margin-bottom:6px;
-letter-spacing:-0.5px;
-}
-
-.intro-blue{
-background:linear-gradient(135deg,var(--blue) 0%,var(--navy) 100%);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-background-clip:text;
-}
-
-.version-badge{
-display:inline-block;
-background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 100%);
-color:#fff;
-font-size:10px;
-font-weight:700;
-padding:4px 12px;
-border-radius:20px;
-margin-bottom:16px;
-letter-spacing:1px;
-box-shadow:var(--glow);
-}
-
-.intro-desc{
-font-size:14px;
-color:var(--text2);
-line-height:1.7;
-margin-bottom:24px;
-}
-
-.mech-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-margin-bottom:24px;
-}
-
-.mech-box{
-background:var(--surface);
-border:1px solid var(--border);
-border-radius:16px;
-padding:14px;
-box-shadow:var(--shadow);
-transition:transform .2s;
-}
-
+/* Intro */
+.intro-mark{ font-size:64px; margin-top:40px; display:block; margin-bottom:12px; filter:drop-shadow(0 0 20px rgba(59,130,246,0.5)); }
+.intro-title{ font-family:'Playfair Display',serif; font-size:38px; font-weight:700; color:var(--text); line-height:1.1; margin-bottom:6px; letter-spacing:-0.5px; }
+.intro-blue{ background:linear-gradient(135deg,var(--blue) 0%,var(--navy) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.version-badge{ display:inline-block; background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 100%); color:#fff; font-size:10px; font-weight:700; padding:4px 12px; border-radius:20px; margin-bottom:16px; letter-spacing:1px; box-shadow:var(--glow); }
+.intro-desc{ font-size:14px; color:var(--text2); line-height:1.7; margin-bottom:24px; }
+.mech-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:24px; }
+.mech-box{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:14px; box-shadow:var(--shadow); transition:transform .2s; }
 .mech-box:hover{transform:translateY(-2px);}
-
-.mech-icon{font-size:24px;display:block;margin-bottom:6px;}
-
-.mech-lbl{
-font-size:11px;
-font-weight:700;
-color:var(--text);
-margin-bottom:4px;
-text-transform:uppercase;
-letter-spacing:0.5px;
-}
-
-.mech-desc{
-font-size:11px;
-color:var(--muted);
-line-height:1.4;
-}
-
-.name-lbl{
-font-size:13px;
-color:var(--text2);
-margin-bottom:10px;
-font-weight:600;
-}
-
+.mech-icon{font-size:24px; display:block; margin-bottom:6px;}
+.mech-lbl{ font-size:11px; font-weight:700; color:var(--text); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px; }
+.mech-desc{ font-size:11px; color:var(--muted); line-height:1.4; }
+.name-lbl{ font-size:13px; color:var(--text2); margin-bottom:10px; font-weight:600; }
 .name-inp{
-width:100%;
-background:var(--surface);
-border:2px solid var(--border2);
-border-radius:16px;
-padding:16px 18px;
-color:var(--text);
-font-family:'Inter',sans-serif;
-font-size:16px;
-outline:none;
-margin-bottom:16px;
-transition:all .2s;
+width:100%; background:var(--surface); border:2px solid var(--border2); border-radius:16px;
+padding:16px 18px; color:var(--text); font-family:'Inter',sans-serif; font-size:16px;
+outline:none; margin-bottom:16px; transition:all .2s;
 }
-
-.name-inp:focus{
-border-color:var(--blue);
-box-shadow:0 0 0 4px rgba(59,130,246,0.1);
-}
-
+.name-inp:focus{ border-color:var(--blue); box-shadow:0 0 0 4px rgba(59,130,246,0.1); }
 .name-inp::placeholder{color:var(--muted);}
 
 /* HUD */
-.hud{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:8px;
-margin-bottom:12px;
-padding:14px 16px;
-background:var(--surface);
-border:1px solid var(--border);
-border-radius:16px;
-box-shadow:var(--shadow);
-}
-
-.hud-role{
-font-size:11px;
-font-weight:700;
-color:var(--blue);
-flex-shrink:0;
-text-transform:uppercase;
-letter-spacing:0.5px;
-}
-
-.hud-q{
-font-size:11px;
-color:var(--muted);
-font-weight:600;
-flex-shrink:0;
-}
-
-.hud-capital{
-font-family:'JetBrains Mono',monospace;
-font-size:20px;
-font-weight:700;
-color:var(--green);
-transition:color .3s;
-flex-shrink:0;
-}
-
+.hud{ display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:12px; padding:14px 16px; background:var(--surface); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); }
+.hud-role{ font-size:11px; font-weight:700; color:var(--blue); flex-shrink:0; text-transform:uppercase; letter-spacing:0.5px; }
+.hud-q{ font-size:11px; color:var(--muted); font-weight:600; flex-shrink:0; }
+.hud-capital{ font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; color:var(--green); transition:color .3s; flex-shrink:0; }
 .hud-capital.w1{color:var(--orange);}
-
-.hud-capital.w2{
-color:var(--red);
-animation:pulse 1s infinite;
-}
-
-@keyframes pulse{
-0%,100%{opacity:1}
-50%{opacity:.6}
-}
+.hud-capital.w2{ color:var(--red); animation:pulse 1s infinite; }
+@keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.6} }
 
 /* Streak */
-.streak-row{
-display:flex;
-align-items:center;
-gap:6px;
-margin-bottom:12px;
-}
-
-.sp{
-width:12px;
-height:12px;
-border-radius:50%;
-background:var(--border2);
-transition:all .3s;
-}
-
-.sp.on{
-background:var(--green);
-transform:scale(1.2);
-box-shadow:0 0 10px rgba(16,185,129,0.6);
-}
-
-.streak-lbl{
-font-size:11px;
-color:var(--muted);
-margin-left:6px;
-font-weight:600;
-}
-
-.streak-mult{
-margin-left:auto;
-font-family:'JetBrains Mono',monospace;
-font-size:11px;
-font-weight:700;
-background:var(--greenbg);
-color:var(--green);
-padding:3px 10px;
-border-radius:10px;
-display:none;
-border:1px solid var(--greenborder);
-}
-
+.streak-row{ display:flex; align-items:center; gap:6px; margin-bottom:12px; }
+.sp{ width:12px; height:12px; border-radius:50%; background:var(--border2); transition:all .3s; }
+.sp.on{ background:var(--green); transform:scale(1.2); box-shadow:0 0 10px rgba(16,185,129,0.6); }
+.streak-lbl{ font-size:11px; color:var(--muted); margin-left:6px; font-weight:600; }
+.streak-mult{ margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; background:var(--greenbg); color:var(--green); padding:3px 10px; border-radius:10px; display:none; border:1px solid var(--greenborder); }
 .streak-mult.on{display:block;}
 
 /* Warning */
-.warn{
-display:none;
-background:var(--orangebg);
-border:1px solid var(--orange);
-border-radius:12px;
-padding:10px 14px;
-font-size:12px;
-font-weight:600;
-color:var(--orange);
-margin-bottom:12px;
-text-align:center;
-animation:shake 3s infinite;
-}
-
-.warn.danger{
-background:var(--redbg);
-border-color:var(--red);
-color:var(--red);
-}
-
+.warn{ display:none; background:var(--orangebg); border:1px solid var(--orange); border-radius:12px; padding:10px 14px; font-size:12px; font-weight:600; color:var(--orange); margin-bottom:12px; text-align:center; animation:shake 3s infinite; }
+.warn.danger{ background:var(--redbg); border-color:var(--red); color:var(--red); }
 .warn.show{display:block;}
-
-@keyframes shake{
-0%,100%{transform:translateX(0)}
-2%,6%{transform:translateX(-3px)}
-4%,8%{transform:translateX(3px)}
-}
+@keyframes shake{ 0%,100%{transform:translateX(0)} 2%,6%{transform:translateX(-3px)} 4%,8%{transform:translateX(3px)} }
 
 /* Timer */
-.timer-row{
-display:flex;
-justify-content:center;
-margin-bottom:12px;
-position:relative;
-}
-
+.timer-row{ display:flex; justify-content:center; margin-bottom:12px; position:relative; }
 .t-svg{transform:rotate(-90deg);}
-
-.t-bg{fill:none;stroke:var(--border);stroke-width:6;}
-
-.t-ring{
-fill:none;
-stroke:var(--blue);
-stroke-width:6;
-stroke-linecap:round;
-transition:stroke-dashoffset .9s linear,stroke .3s;
-filter:drop-shadow(0 0 8px rgba(59,130,246,0.5));
-}
-
-.t-num{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-font-family:'JetBrains Mono',monospace;
-font-size:22px;
-font-weight:700;
-color:var(--text);
-transition:color .3s;
-}
+.t-bg{fill:none; stroke:var(--border); stroke-width:6;}
+.t-ring{ fill:none; stroke:var(--blue); stroke-width:6; stroke-linecap:round; transition:stroke-dashoffset .9s linear,stroke .3s; filter:drop-shadow(0 0 8px rgba(59,130,246,0.5)); }
+.t-num{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:700; color:var(--text); transition:color .3s; }
 
 /* Question */
-.q-card{
-background:var(--s2);
-border:1px solid var(--border);
-border-radius:16px;
-padding:16px 18px;
-margin-bottom:16px;
-}
-
-.q-meta{
-font-size:10px;
-letter-spacing:2px;
-text-transform:uppercase;
-color:var(--blue);
-font-weight:700;
-margin-bottom:10px;
-}
-
-.q-body{
-font-size:14px;
-line-height:1.8;
-color:var(--text2);
-}
-
-.q-body.vn{
-color:var(--text);
-font-weight:500;
-}
-
-.q-stem{
-font-family:'Playfair Display',serif;
-font-size:17px;
-font-weight:700;
-color:var(--text);
-line-height:1.4;
-margin-bottom:16px;
-}
+.q-card{ background:var(--s2); border:1px solid var(--border); border-radius:16px; padding:16px 18px; margin-bottom:16px; }
+.q-meta{ font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--blue); font-weight:700; margin-bottom:10px; }
+.q-body{ font-size:14px; line-height:1.8; color:var(--text2); }
+.q-body.vn{ color:var(--text); font-weight:500; }
+.q-stem{ font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text); line-height:1.4; margin-bottom:16px; }
 
 /* Choices */
-.choices{
-display:flex;
-flex-direction:column;
-gap:10px;
-margin-bottom:16px;
-}
-
-.choice{
-background:var(--surface);
-border:2px solid var(--border2);
-border-radius:14px;
-padding:14px 16px;
-display:flex;
-align-items:center;
-gap:12px;
-cursor:pointer;
-text-align:left;
-width:100%;
-transition:all .2s;
-}
-
+.choices{ display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+.choice{ background:var(--surface); border:2px solid var(--border2); border-radius:14px; padding:14px 16px; display:flex; align-items:center; gap:12px; cursor:pointer; text-align:left; width:100%; transition:all .2s; }
 .choice:active{transform:scale(.98);}
-
-.choice:hover{
-border-color:var(--blue);
-background:var(--s2);
-transform:translateX(4px);
-}
-
-.choice.correct{
-border-color:var(--greenborder);
-background:var(--greenbg);
-}
-
-.choice.wrong{
-border-color:var(--redborder);
-background:var(--redbg);
-}
-
-.choice.elim{
-opacity:.2;
-cursor:default;
-pointer-events:none;
-}
-
-.choice.disabled{cursor:default;}
-
-.choice.disabled:hover{
-border-color:var(--border2);
-background:var(--surface);
-transform:none;
-}
-
-.ch-l{
-width:32px;
-height:32px;
-border-radius:10px;
-background:var(--s2);
-border:2px solid var(--border2);
-display:flex;
-align-items:center;
-justify-content:center;
-font-family:'JetBrains Mono',monospace;
-font-size:13px;
-font-weight:700;
-flex-shrink:0;
-transition:all .2s;
-color:var(--text2);
-}
-
-.choice.correct .ch-l{
-background:var(--green);
-color:#fff;
-border-color:var(--green);
-}
-
-.choice.wrong .ch-l{
-background:var(--red);
-color:#fff;
-border-color:var(--red);
-}
-
-.ch-t{
-font-size:14px;
-line-height:1.4;
-color:var(--text);
-}
+.choice:hover{ border-color:var(--blue); background:var(--s2); transform:translateX(4px); }
+.choice.correct{ border-color:var(--greenborder); background:var(--greenbg); }
+.choice.wrong{ border-color:var(--redborder); background:var(--redbg); }
+.choice.elim{ opacity:.2; cursor:default; pointer-events:none; }
+.choice.disabled{ cursor:default; }
+.choice.disabled:hover{ border-color:var(--border2); background:var(--surface); transform:none; }
+.ch-l{ width:32px; height:32px; border-radius:10px; background:var(--s2); border:2px solid var(--border2); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700; flex-shrink:0; transition:all .2s; color:var(--text2); }
+.choice.correct .ch-l{ background:var(--green); color:#fff; border-color:var(--green); }
+.choice.wrong .ch-l{ background:var(--red); color:#fff; border-color:var(--red); }
+.ch-t{ font-size:14px; line-height:1.4; color:var(--text); }
 
 /* Hints */
-.hints{
-display:grid;
-grid-template-columns:1fr 1fr 1fr;
-gap:8px;
-}
-
-.h-btn{
-background:var(--surface);
-border:2px solid var(--border2);
-border-radius:12px;
-padding:10px 6px;
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:4px;
-cursor:pointer;
-transition:all .2s;
-}
-
+.hints{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+.h-btn{ background:var(--surface); border:2px solid var(--border2); border-radius:12px; padding:10px 6px; display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; transition:all .2s; }
 .h-btn:active{transform:scale(.95);}
-
-.h-btn:hover{
-border-color:var(--blue);
-background:var(--s2);
-}
-
-.h-btn.used{
-opacity:.3;
-cursor:default;
-pointer-events:none;
-}
-
+.h-btn:hover{ border-color:var(--blue); background:var(--s2); }
+.h-btn.used{ opacity:.3; cursor:default; pointer-events:none; }
 .h-icon{font-size:18px;}
-
-.h-lbl{
-font-size:9px;
-font-weight:700;
-color:var(--text);
-text-align:center;
-line-height:1.2;
-}
-
-.h-cost{
-font-size:10px;
-color:var(--red);
-font-weight:700;
-font-family:'JetBrains Mono',monospace;
-}
+.h-lbl{ font-size:9px; font-weight:700; color:var(--text); text-align:center; line-height:1.2; }
+.h-cost{ font-size:10px; color:var(--red); font-weight:700; font-family:'JetBrains Mono',monospace; }
 
 /* Result Sheet */
-.overlay{
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,0.7);
-backdrop-filter:blur(4px);
-z-index:99;
-}
-
+.overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(4px); z-index:99; }
 .overlay.show{display:block;}
-
-.rsheet{
-display:none;
-position:fixed;
-bottom:0;
-left:50%;
-transform:translateX(-50%);
-width:100%;
-max-width:480px;
-background:var(--surface);
-border-top:2px solid var(--border);
-border-radius:24px 24px 0 0;
-padding:24px 20px 40px;
-z-index:100;
-animation:slideUp .4s cubic-bezier(0.16,1,0.3,1);
-box-shadow:0 -10px 40px rgba(0,0,0,0.5);
-}
-
+.rsheet{ display:none; position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; background:var(--surface); border-top:2px solid var(--border); border-radius:24px 24px 0 0; padding:24px 20px 40px; z-index:100; animation:slideUp .4s cubic-bezier(0.16,1,0.3,1); box-shadow:0 -10px 40px rgba(0,0,0,0.5); }
 .rsheet.show{display:block;}
-
-@keyframes slideUp{
-from{transform:translateX(-50%) translateY(100%)}
-to{transform:translateX(-50%) translateY(0)}
-}
-
-.rs-top{
-display:flex;
-align-items:center;
-gap:10px;
-margin-bottom:10px;
-}
-
+@keyframes slideUp{ from{transform:translateX(-50%) translateY(100%)} to{transform:translateX(-50%) translateY(0)} }
+.rs-top{ display:flex; align-items:center; gap:10px; margin-bottom:10px; }
 .rs-icon{font-size:28px;}
-
-.rs-verdict{
-font-family:'Playfair Display',serif;
-font-size:20px;
-font-weight:700;
-}
-
-.rs-verdict.ok{color:var(--green);}
-
-.rs-verdict.bad{color:var(--red);}
-
-.rs-verdict.time{color:var(--orange);}
-
-.rs-delta{
-margin-left:auto;
-font-family:'JetBrains Mono',monospace;
-font-size:18px;
-font-weight:700;
-}
-
-.rs-delta.pos{color:var(--green);}
-
-.rs-delta.neg{color:var(--red);}
-
-.rs-breakdown{
-font-size:12px;
-color:var(--muted);
-margin-bottom:12px;
-line-height:1.5;
-}
-
-.rs-explain{
-font-size:14px;
-line-height:1.7;
-color:var(--text2);
-margin-bottom:14px;
-}
-
-.rs-term{
-background:var(--s2);
-border:1px solid var(--border);
-border-radius:12px;
-padding:12px 16px;
-margin-bottom:16px;
-}
-
-.rs-term-lbl{
-font-size:9px;
-letter-spacing:1.5px;
-text-transform:uppercase;
-color:var(--blue);
-font-weight:700;
-margin-bottom:6px;
-}
-
-.rs-term-en{
-font-family:'Playfair Display',serif;
-font-size:15px;
-font-weight:700;
-color:var(--text);
-margin-bottom:4px;
-}
-
-.rs-term-vn{
-font-size:13px;
-color:var(--green);
-font-weight:600;
-}
+.rs-verdict{ font-family:'Playfair Display',serif; font-size:20px; font-weight:700; }
+.rs-verdict.ok{color:var(--green);} .rs-verdict.bad{color:var(--red);} .rs-verdict.time{color:var(--orange);}
+.rs-delta{ margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:18px; font-weight:700; }
+.rs-delta.pos{color:var(--green);} .rs-delta.neg{color:var(--red);}
+.rs-breakdown{ font-size:12px; color:var(--muted); margin-bottom:12px; line-height:1.5; }
+.rs-explain{ font-size:14px; line-height:1.7; color:var(--text2); margin-bottom:14px; }
+.rs-term{ background:var(--s2); border:1px solid var(--border); border-radius:12px; padding:12px 16px; margin-bottom:16px; }
+.rs-term-lbl{ font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--blue); font-weight:700; margin-bottom:6px; }
+.rs-term-en{ font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--text); margin-bottom:4px; }
+.rs-term-vn{ font-size:13px; color:var(--green); font-weight:600; }
 
 /* Bankrupt */
-.bankrupt-wrap{
-flex:1;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-text-align:center;
-padding:0 20px;
-}
-
-.bankrupt-icon{
-font-size:72px;
-animation:shake .6s ease;
-margin-bottom:20px;
-filter:grayscale(1);
-}
-
-.bankrupt-h{
-font-family:'Playfair Display',serif;
-font-size:32px;
-font-weight:700;
-color:var(--red);
-margin-bottom:12px;
-line-height:1.1;
-}
-
-.bankrupt-sub{
-font-size:14px;
-color:var(--text2);
-line-height:1.8;
-margin-bottom:24px;
-max-width:320px;
-}
-
-.bankrupt-capital-box{
-background:var(--redbg);
-border:2px solid var(--redborder);
-border-radius:20px;
-padding:20px 32px;
-margin-bottom:24px;
-}
-
-.bc-lbl{
-font-size:10px;
-letter-spacing:2px;
-text-transform:uppercase;
-color:var(--red);
-font-weight:700;
-margin-bottom:6px;
-}
-
-.bc-num{
-font-family:'JetBrains Mono',monospace;
-font-size:36px;
-font-weight:700;
-color:var(--red);
-}
-
-.bankrupt-quote{
-font-size:13px;
-color:var(--muted);
-font-style:italic;
-margin-bottom:32px;
-}
+.bankrupt-wrap{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 20px; }
+.bankrupt-icon{ font-size:72px; animation:shake .6s ease; margin-bottom:20px; filter:grayscale(1); }
+.bankrupt-h{ font-family:'Playfair Display',serif; font-size:32px; font-weight:700; color:var(--red); margin-bottom:12px; line-height:1.1; }
+.bankrupt-sub{ font-size:14px; color:var(--text2); line-height:1.8; margin-bottom:24px; max-width:320px; }
+.bankrupt-capital-box{ background:var(--redbg); border:2px solid var(--redborder); border-radius:20px; padding:20px 32px; margin-bottom:24px; }
+.bc-lbl{ font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--red); font-weight:700; margin-bottom:6px; }
+.bc-num{ font-family:'JetBrains Mono',monospace; font-size:36px; font-weight:700; color:var(--red); }
+.bankrupt-quote{ font-size:13px; color:var(--muted); font-style:italic; margin-bottom:32px; }
 
 /* Report */
-.report-hero{
-background:linear-gradient(135deg,var(--navy) 0%,var(--blue2) 100%);
-color:#fff;
-border-radius:20px;
-padding:28px 22px 24px;
-margin-bottom:16px;
-position:relative;
-overflow:hidden;
-box-shadow:0 8px 30px rgba(59,130,246,0.3);
-}
-
-.report-hero::before{
-content:'🏦';
-font-size:100px;
-opacity:.05;
-position:absolute;
-right:-10px;
-top:-10px;
-line-height:1;
-}
-
-.rh-lbl{
-font-size:10px;
-letter-spacing:2px;
-text-transform:uppercase;
-color:rgba(255,255,255,0.7);
-font-weight:700;
-margin-bottom:10px;
-}
-
-.rh-name{
-font-family:'Playfair Display',serif;
-font-size:26px;
-font-weight:700;
-margin-bottom:8px;
-}
-
-.rh-rank{
-display:inline-block;
-background:rgba(251,191,36,0.2);
-border:1px solid var(--gold);
-color:var(--gold);
-font-size:12px;
-font-weight:700;
-padding:5px 14px;
-border-radius:20px;
-margin-bottom:16px;
-}
-
-.rh-cap{
-font-family:'JetBrains Mono',monospace;
-font-size:42px;
-font-weight:700;
-color:var(--gold);
-line-height:1;
-}
-
-.rh-cap-lbl{
-font-size:12px;
-color:rgba(255,255,255,0.7);
-margin-top:4px;
-}
-
-.rh-sub{
-font-size:12px;
-color:rgba(255,255,255,0.6);
-margin-top:10px;
-}
+.report-hero{ background:linear-gradient(135deg,var(--navy) 0%,var(--blue2) 100%); color:#fff; border-radius:20px; padding:28px 22px 24px; margin-bottom:16px; position:relative; overflow:hidden; box-shadow:0 8px 30px rgba(59,130,246,0.3); }
+.report-hero::before{ content:'🏦'; font-size:100px; opacity:.05; position:absolute; right:-10px; top:-10px; line-height:1; }
+.rh-lbl{ font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.7); font-weight:700; margin-bottom:10px; }
+.rh-name{ font-family:'Playfair Display',serif; font-size:26px; font-weight:700; margin-bottom:8px; }
+.rh-rank{ display:inline-block; background:rgba(251,191,36,0.2); border:1px solid var(--gold); color:var(--gold); font-size:12px; font-weight:700; padding:5px 14px; border-radius:20px; margin-bottom:16px; }
+.rh-cap{ font-family:'JetBrains Mono',monospace; font-size:42px; font-weight:700; color:var(--gold); line-height:1; }
+.rh-cap-lbl{ font-size:12px; color:rgba(255,255,255,0.7); margin-top:4px; }
+.rh-sub{ font-size:12px; color:rgba(255,255,255,0.6); margin-top:10px; }
 
 /* Metrics */
-.metrics-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-margin-bottom:16px;
-}
-
-.m-box{
-background:var(--surface);
-border:1px solid var(--border);
-border-radius:16px;
-padding:16px;
-box-shadow:var(--shadow);
-}
-
-.m-icon{font-size:20px;margin-bottom:6px;display:block;}
-
-.m-val{
-font-family:'JetBrains Mono',monospace;
-font-size:22px;
-font-weight:700;
-color:var(--text);
-display:block;
-}
-
-.m-lbl{
-font-size:11px;
-color:var(--muted);
-line-height:1.3;
-}
-
-.section-h{
-font-family:'Playfair Display',serif;
-font-size:13px;
-font-weight:700;
-color:var(--text);
-margin-bottom:12px;
-margin-top:18px;
-letter-spacing:0.5px;
-text-transform:uppercase;
-}
+.metrics-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+.m-box{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow:var(--shadow); }
+.m-icon{font-size:20px; margin-bottom:6px; display:block;}
+.m-val{ font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:700; color:var(--text); display:block; }
+.m-lbl{ font-size:11px; color:var(--muted); line-height:1.3; }
+.section-h{ font-family:'Playfair Display',serif; font-size:13px; font-weight:700; color:var(--text); margin-bottom:12px; margin-top:18px; letter-spacing:0.5px; text-transform:uppercase; }
 
 /* Profit bars */
-.profit-row{
-display:flex;
-align-items:center;
-gap:10px;
-margin-bottom:10px;
-}
-
-.profit-lbl{
-font-size:12px;
-color:var(--text2);
-flex:1;
-}
-
-.profit-bar{
-flex:0 0 80px;
-height:8px;
-background:var(--border2);
-border-radius:4px;
-overflow:hidden;
-}
-
-.profit-fill{
-height:100%;
-background:linear-gradient(90deg,var(--blue) 0%,var(--navy) 100%);
-border-radius:4px;
-}
-
-.profit-val{
-font-family:'JetBrains Mono',monospace;
-font-size:12px;
-font-weight:700;
-color:var(--text);
-min-width:64px;
-text-align:right;
-}
+.profit-row{ display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.profit-lbl{ font-size:12px; color:var(--text2); flex:1; }
+.profit-bar{ flex:0 0 80px; height:8px; background:var(--border2); border-radius:4px; overflow:hidden; }
+.profit-fill{ height:100%; background:linear-gradient(90deg,var(--blue) 0%,var(--navy) 100%); border-radius:4px; }
+.profit-val{ font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:var(--text); min-width:64px; text-align:right; }
 
 /* Category bars */
-.cat-row{
-display:flex;
-align-items:center;
-gap:10px;
-margin-bottom:8px;
-}
-
-.cat-lbl{
-font-size:11px;
-color:var(--text2);
-width:85px;
-flex-shrink:0;
-}
-
-.cat-bar{
-flex:1;
-height:8px;
-background:var(--border2);
-border-radius:4px;
-overflow:hidden;
-}
-
-.cat-fill{
-height:100%;
-background:linear-gradient(90deg,var(--green) 0%,var(--navy) 100%);
-border-radius:4px;
-}
-
-.cat-score{
-font-size:11px;
-font-weight:700;
-color:var(--text);
-min-width:32px;
-text-align:right;
-font-family:'JetBrains Mono',monospace;
-}
+.cat-row{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.cat-lbl{ font-size:11px; color:var(--text2); width:85px; flex-shrink:0; }
+.cat-bar{ flex:1; height:8px; background:var(--border2); border-radius:4px; overflow:hidden; }
+.cat-fill{ height:100%; background:linear-gradient(90deg,var(--green) 0%,var(--navy) 100%); border-radius:4px; }
+.cat-score{ font-size:11px; font-weight:700; color:var(--text); min-width:32px; text-align:right; font-family:'JetBrains Mono',monospace; }
 
 /* Risk badge */
-.risk-badge{
-display:inline-block;
-padding:8px 16px;
-border-radius:20px;
-font-size:13px;
-font-weight:700;
-border:2px solid;
-}
-
-.risk-c{
-color:var(--green);
-border-color:var(--greenborder);
-background:var(--greenbg);
-}
-
-.risk-b{
-color:var(--blue);
-border-color:var(--blue);
-background:rgba(59,130,246,0.1);
-}
-
-.risk-a{
-color:var(--orange);
-border-color:var(--orange);
-background:var(--orangebg);
-}
-
-.risk-r{
-color:var(--red);
-border-color:var(--redborder);
-background:var(--redbg);
-}
-
-.weak-area{
-font-size:12px;
-color:var(--text2);
-margin-top:10px;
-padding:12px 14px;
-background:var(--redbg);
-border:1px solid var(--redborder);
-border-radius:12px;
-}
+.risk-badge{ display:inline-block; padding:8px 16px; border-radius:20px; font-size:13px; font-weight:700; border:2px solid; }
+.risk-c{ color:var(--green); border-color:var(--greenborder); background:var(--greenbg); }
+.risk-b{ color:var(--blue); border-color:var(--blue); background:rgba(59,130,246,0.1); }
+.risk-a{ color:var(--orange); border-color:var(--orange); background:var(--orangebg); }
+.risk-r{ color:var(--red); border-color:var(--redborder); background:var(--redbg); }
+.weak-area{ font-size:12px; color:var(--text2); margin-top:10px; padding:12px 14px; background:var(--redbg); border:1px solid var(--redborder); border-radius:12px; }
 
 /* Review */
-.review-nav{
-display:flex;
-align-items:center;
-margin-bottom:20px;
-}
-
-.review-back{
-background:none;
-border:none;
-color:var(--muted);
-font-size:14px;
-cursor:pointer;
-padding:6px 0;
-transition:color .2s;
-}
-
+.review-nav{ display:flex; align-items:center; margin-bottom:20px; }
+.review-back{ background:none; border:none; color:var(--muted); font-size:14px; cursor:pointer; padding:6px 0; transition:color .2s; }
 .review-back:hover{color:var(--text);}
-
-.review-title{
-font-family:'Playfair Display',serif;
-font-size:18px;
-font-weight:700;
-margin-left:12px;
-color:var(--text);
-}
-
-.rv-item{
-background:var(--surface);
-border:1px solid var(--border);
-border-radius:16px;
-padding:16px;
-margin-bottom:12px;
-box-shadow:var(--shadow);
-}
-
+.review-title{ font-family:'Playfair Display',serif; font-size:18px; font-weight:700; margin-left:12px; color:var(--text); }
+.rv-item{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px; margin-bottom:12px; box-shadow:var(--shadow); }
 .rv-item.rv-c{border-left:4px solid var(--green);}
-
 .rv-item.rv-w{border-left:4px solid var(--red);}
-
-.rv-num{
-font-size:10px;
-letter-spacing:1.5px;
-text-transform:uppercase;
-color:var(--muted);
-font-weight:700;
-margin-bottom:8px;
-}
-
-.rv-q{
-font-size:13px;
-color:var(--text);
-line-height:1.7;
-margin-bottom:10px;
-font-weight:500;
-}
-
-.rv-tags{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-margin-bottom:10px;
-}
-
-.rv-tag{
-font-size:11px;
-font-weight:600;
-padding:4px 10px;
-border-radius:20px;
-}
-
-.rv-tag-c{
-background:var(--greenbg);
-color:var(--green);
-border:1px solid var(--greenborder);
-}
-
-.rv-tag-w{
-background:var(--redbg);
-color:var(--red);
-border:1px solid var(--redborder);
-}
-
-.rv-tag-a{
-background:var(--s2);
-color:var(--blue);
-border:1px solid var(--blue);
-}
-
-.rv-tag-hint{
-background:var(--orangebg);
-color:var(--orange);
-border:1px solid var(--orange);
-}
-
-.rv-exp{
-font-size:12px;
-color:var(--text2);
-line-height:1.6;
-}
-
+.rv-num{ font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); font-weight:700; margin-bottom:8px; }
+.rv-q{ font-size:13px; color:var(--text); line-height:1.7; margin-bottom:10px; font-weight:500; }
+.rv-tags{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+.rv-tag{ font-size:11px; font-weight:600; padding:4px 10px; border-radius:20px; }
+.rv-tag-c{ background:var(--greenbg); color:var(--green); border:1px solid var(--greenborder); }
+.rv-tag-w{ background:var(--redbg); color:var(--red); border:1px solid var(--redborder); }
+.rv-tag-a{ background:var(--s2); color:var(--blue); border:1px solid var(--blue); }
+.rv-tag-hint{ background:var(--orangebg); color:var(--orange); border:1px solid var(--orange); }
 </style>
 </head>
 <body>
 <div class="app">
 
-<!-- ══ INTRO ══ -->
+<!-- ══ INTRO (Việt hóa) ══ -->
 <div class="screen active" id="s-intro">
   <span class="intro-mark">💼</span>
-  <div class="intro-title">Banking<br><span class="intro-blue">Tycoon</span></div>
-  <div class="version-badge">FINTECH EDITION 2.0</div>
-  <p class="intro-desc">You're a banker. Manage capital, answer fast, survive the market. Every decision costs — or earns.</p>
+  <div class="intro-title">Ngân hàng<br><span class="intro-blue">Thực chiến</span></div>
+  <div class="version-badge">PHIÊN BẢN LỚP HỌC 3.1</div>
+  <p class="intro-desc">Bạn là một chủ ngân hàng. Quản lý vốn, trả lời nhanh, sống sót qua thị trường. Mỗi quyết định đều có giá – hoặc mang về lợi nhuận.</p>
   <div class="mech-grid">
-    <div class="mech-box"><span class="mech-icon">💰</span><div class="mech-lbl">Start: $30M</div><div class="mech-desc">Right: +$5M + speed. Wrong: −$2M→−$3.5M</div></div>
-    <div class="mech-box"><span class="mech-icon">⏱</span><div class="mech-lbl">25s Timer</div><div class="mech-desc">Faster answer = higher bonus profit</div></div>
-    <div class="mech-box"><span class="mech-icon">🔥</span><div class="mech-lbl">Streak ×1.5</div><div class="mech-desc">Chain correct answers for multiplier</div></div>
-    <div class="mech-box"><span class="mech-icon">💡</span><div class="mech-lbl">3 Hints</div><div class="mech-desc">Buy intelligence. Costs capital.</div></div>
+    <div class="mech-box"><span class="mech-icon">💰</span><div class="mech-lbl">Vốn ban đầu: $30M</div><div class="mech-desc">Đúng: +$5M + thưởng tốc độ. Sai: –$2M→–$3.5M</div></div>
+    <div class="mech-box"><span class="mech-icon">⏱</span><div class="mech-lbl">30 giây</div><div class="mech-desc">Trả lời càng nhanh, thưởng càng cao</div></div>
+    <div class="mech-box"><span class="mech-icon">🔥</span><div class="mech-lbl">Chuỗi ×1.5</div><div class="mech-desc">Trả lời đúng liên tiếp để nhận hệ số nhân</div></div>
+    <div class="mech-box"><span class="mech-icon">💡</span><div class="mech-lbl">3 Gợi ý</div><div class="mech-desc">Mua thông tin. Tốn vốn.</div></div>
   </div>
-  <p class="name-lbl">Your name:</p>
-  <input class="name-inp" id="name-inp" type="text" placeholder="e.g. Nguyen Van A" maxlength="30"/>
+  <p class="name-lbl">Tên của bạn:</p>
+  <input class="name-inp" id="name-inp" type="text" placeholder="vd: Nguyen Van A" maxlength="30"/>
   <div class="spacer"></div>
-  <button class="btn btn-blue" onclick="startGame()">Enter the Market →</button>
+  <button class="btn btn-blue" onclick="startGame()">Vào thị trường →</button>
 </div>
 
 <!-- ══ GAME ══ -->
@@ -1114,7 +246,7 @@ line-height:1.6;
     <div class="sp" id="sp2"></div>
     <div class="sp" id="sp3"></div>
     <div class="sp" id="sp4"></div>
-    <span class="streak-lbl" id="streak-lbl">Streak: 0</span>
+    <span class="streak-lbl" id="streak-lbl">Chuỗi: 0</span>
     <span class="streak-mult" id="streak-mult">×1.0</span>
   </div>
 
@@ -1123,7 +255,7 @@ line-height:1.6;
       <circle class="t-bg" cx="36" cy="36" r="30"/>
       <circle class="t-ring" id="t-ring" cx="36" cy="36" r="30" stroke-dasharray="188.5" stroke-dashoffset="0"/>
     </svg>
-    <div class="t-num" id="t-num">25</div>
+    <div class="t-num" id="t-num">30</div>
   </div>
 
   <div class="warn" id="warn"></div>
@@ -1139,17 +271,17 @@ line-height:1.6;
   <div class="hints">
     <button class="h-btn" id="h-decode" onclick="useHint('decode')">
       <span class="h-icon">🌐</span>
-      <span class="h-lbl">Decode VN</span>
+      <span class="h-lbl">Dịch tiếng Việt</span>
       <span class="h-cost">−$1.5M</span>
     </button>
     <button class="h-btn" id="h-elim" onclick="useHint('eliminate')">
       <span class="h-icon">✂️</span>
-      <span class="h-lbl">Eliminate ×2</span>
+      <span class="h-lbl">Loại 2 đáp án</span>
       <span class="h-cost">−$2.0M</span>
     </button>
     <button class="h-btn" id="h-freeze" onclick="useHint('freeze')">
       <span class="h-icon">⏸</span>
-      <span class="h-lbl">+5 Seconds</span>
+      <span class="h-lbl">+5 Giây</span>
       <span class="h-cost">−$1.0M</span>
     </button>
   </div>
@@ -1159,54 +291,54 @@ line-height:1.6;
 <div class="screen" id="s-bankrupt">
   <div class="bankrupt-wrap">
     <div class="bankrupt-icon">🏦</div>
-    <div class="bankrupt-h">BANK<br>COLLAPSED</div>
-    <p class="bankrupt-sub">Your assets are wiped out. Depositors are panicking in the streets. Regulators have seized your operations.</p>
+    <div class="bankrupt-h">NGÂN HÀNG<br>SỤP ĐỔ</div>
+    <p class="bankrupt-sub">Tài sản của bạn bốc hơi. Người gửi tiền hoảng loạn. Cơ quan quản lý đã phong tỏa hoạt động.</p>
     <div class="bankrupt-capital-box">
-      <div class="bc-lbl">Final Capital</div>
+      <div class="bc-lbl">Vốn cuối cùng</div>
       <div class="bc-num" id="bankrupt-num">$0</div>
     </div>
-    <p class="bankrupt-quote">"Your bank is under government receivership."</p>
-    <button class="btn btn-danger" onclick="buildReport(); showScreen('s-report');">View Autopsy Report →</button>
+    <p class="bankrupt-quote">"Ngân hàng của bạn đã bị đưa vào diện kiểm soát đặc biệt."</p>
+    <button class="btn btn-danger" onclick="buildReport(); showScreen('s-report');">Xem báo cáo →</button>
   </div>
 </div>
 
 <!-- ══ REPORT ══ -->
 <div class="screen" id="s-report">
   <div class="report-hero">
-    <div class="rh-lbl">📋 BANKING PERFORMANCE REPORT</div>
+    <div class="rh-lbl">📋 BÁO CÁO HIỆU SUẤT</div>
     <div class="rh-name" id="rh-name">—</div>
-    <div class="rh-rank" id="rh-rank">Analyst</div>
+    <div class="rh-rank" id="rh-rank">Chuyên viên</div>
     <div class="rh-cap" id="rh-cap">$30.0M</div>
-    <div class="rh-cap-lbl">Final Capital</div>
+    <div class="rh-cap-lbl">Vốn cuối cùng</div>
     <div class="rh-sub" id="rh-sub"></div>
   </div>
 
   <div class="metrics-grid">
-    <div class="m-box"><span class="m-icon">✅</span><span class="m-val" id="m-acc">—</span><span class="m-lbl">Correct / Total</span></div>
-    <div class="m-box"><span class="m-icon">🔥</span><span class="m-val" id="m-streak">0</span><span class="m-lbl">Best Streak</span></div>
-    <div class="m-box"><span class="m-icon">💡</span><span class="m-val" id="m-hints">0</span><span class="m-lbl">Hints Used</span></div>
-    <div class="m-box"><span class="m-icon">⚡</span><span class="m-val" id="m-speed">—</span><span class="m-lbl">Avg Speed</span></div>
+    <div class="m-box"><span class="m-icon">✅</span><span class="m-val" id="m-acc">—</span><span class="m-lbl">Đúng / Tổng</span></div>
+    <div class="m-box"><span class="m-icon">🔥</span><span class="m-val" id="m-streak">0</span><span class="m-lbl">Chuỗi tốt nhất</span></div>
+    <div class="m-box"><span class="m-icon">💡</span><span class="m-val" id="m-hints">0</span><span class="m-lbl">Gợi ý đã dùng</span></div>
+    <div class="m-box"><span class="m-icon">⚡</span><span class="m-val" id="m-speed">—</span><span class="m-lbl">Tốc độ trung bình</span></div>
   </div>
 
-  <div class="section-h">💹 Profit Attribution</div>
+  <div class="section-h">💹 Cơ cấu lợi nhuận</div>
   <div id="profit-attr"></div>
 
-  <div class="section-h">🎯 Knowledge by Area</div>
+  <div class="section-h">🎯 Kiến thức theo mảng</div>
   <div id="cat-bars"></div>
 
-  <div class="section-h">🧠 Risk Profile</div>
+  <div class="section-h">🧠 Hồ sơ rủi ro</div>
   <div id="risk-profile"></div>
 
   <div class="spacer"></div>
-  <button class="btn btn-blue" onclick="buildReview(); showScreen('s-review');">📋 Review All Answers</button>
-  <button class="btn btn-ghost" onclick="location.reload()">Play Again</button>
+  <button class="btn btn-blue" onclick="buildReview(); showScreen('s-review');">📋 Xem lại tất cả câu trả lời</button>
+  <button class="btn btn-ghost" onclick="location.reload()">Chơi lại</button>
 </div>
 
 <!-- ══ REVIEW ══ -->
 <div class="screen" id="s-review">
   <div class="review-nav">
-    <button class="review-back" onclick="showScreen('s-report')">← Back</button>
-    <div class="review-title">Answer Review</div>
+    <button class="review-back" onclick="showScreen('s-report')">← Quay lại</button>
+    <div class="review-title">Xem lại câu trả lời</div>
   </div>
   <div id="review-list"></div>
 </div>
@@ -1223,11 +355,11 @@ line-height:1.6;
   <div class="rs-breakdown" id="rs-breakdown"></div>
   <div class="rs-explain" id="rs-explain"></div>
   <div class="rs-term">
-    <div class="rs-term-lbl">KEY TERM</div>
+    <div class="rs-term-lbl">THUẬT NGỮ</div>
     <div class="rs-term-en" id="rs-term-en"></div>
     <div class="rs-term-vn" id="rs-term-vn"></div>
   </div>
-  <button class="btn btn-blue" id="next-btn" onclick="nextQ()">Next →</button>
+  <button class="btn btn-blue" id="next-btn" onclick="nextQ()">Tiếp →</button>
 </div>
 
 <script>
@@ -1236,324 +368,456 @@ line-height:1.6;
 // ══════════════════════════════════════
 const INIT_CAP = 30e6;
 const BASE_REWARD = 5e6;
-const DECODE_REWARD = 2e6;
+const DECODE_REWARD = 2e6;      // Thưởng thấp hơn nếu dùng dịch
 const MAX_TIME_BONUS = 2e6;
 const COST_DECODE = 1.5e6;
 const COST_ELIM = 2e6;
 const COST_FREEZE = 1e6;
 const FREEZE_SECS = 5;
-const TIMER = 25;
+const TIMER = 20; // 20 giây
 const Q_COUNT = 20;
 
 // ══════════════════════════════════════
-// QUESTION DATABASE (30 questions)
+// DATABASE 
 // ══════════════════════════════════════
 const DB = [
-  // ── Level 1: Bank Types ──────────────────────────────
-  { id:1, cat:"Bank Types", lv:"L1", role:"👔 CEO",
-    ctx:"You are the CEO. Your bank only serves normal people — savings accounts, small consumer loans, mortgages.",
-    q:"What type of bank model are you running?",
-    ctxVN:"Bạn là CEO. Ngân hàng của bạn chỉ phục vụ người dân bình thường — tài khoản tiết kiệm, vay tiêu dùng nhỏ, vay mua nhà.",
-    qVN:"Bạn đang điều hành loại ngân hàng nào?",
-    ch:["Investment Bank","Retail Bank","Central Bank","Corporate Bank"],
-    chVN:["Ngân hàng Đầu tư","Ngân hàng Bán lẻ","Ngân hàng Trung ương","Ngân hàng Doanh nghiệp"],
-    ans:1, exp:"Retail Bank focuses entirely on individuals — savings, mortgages, personal loans, credit cards. It does NOT serve large corporations.",
-    tEn:"Retail Bank", tVn:"Ngân hàng Bán lẻ"},
+  // ── Types of Banks ──────────────────────────────
+  { id:1, cat:"Central Bank", lv:"L1", role:"🏛️ Governor",
+    ctx:"This bank does NOT serve individual customers. It manages the entire economy's money supply.",
+    q:"Which bank is this?",
+    ctxVN:"Ngân hàng này KHÔNG phục vụ khách hàng cá nhân. Nó quản lý cung tiền của toàn bộ nền kinh tế.",
+    qVN:"Đây là ngân hàng nào?",
+    ch:["Central Bank", "Commercial Bank", "Investment Bank", "Retail Bank"],
+    chVN:["Ngân hàng Trung ương", "Ngân hàng Thương mại", "Ngân hàng Đầu tư", "Ngân hàng Bán lẻ"],
+    ans:0, exp:"The Central Bank operates at the macroeconomic level and does not serve individual customers.",
+    tEn:"Central Bank", tVn:"Ngân hàng Trung ương"},
 
-  { id:2, cat:"Bank Types", lv:"L1", role:"📊 Analyst",
-    ctx:"You manage a bank that collects deposits from the public and lends them out. Your profit comes from the gap between loan rates and deposit rates.",
-    q:"What type of bank is this?",
-    ctxVN:"Bạn quản lý một ngân hàng nhận tiền gửi từ công chúng và cho vay lại. Lợi nhuận đến từ chênh lệch giữa lãi suất cho vay và lãi suất tiền gửi.",
-    qVN:"Đây là loại ngân hàng gì?",
-    ch:["Commercial Bank","Investment Bank","Central Bank","Broker"],
-    chVN:["Ngân hàng Thương mại","Ngân hàng Đầu tư","Ngân hàng Trung ương","Môi giới"],
-    ans:0, exp:"Commercial Bank — the core model. Takes deposits, gives loans, earns Net Interest Margin. Examples: Vietcombank, BIDV, Techcombank.",
-    tEn:"Commercial Bank", tVn:"Ngân hàng Thương mại"},
+  { id:2, cat:"Central Bank", lv:"L1", role:"🏛️ Governor",
+    ctx:"Prices are going up everywhere. People are worried about inflation.",
+    q:"Which institution has the power to control inflation?",
+    ctxVN:"Giá cả đang tăng ở khắp nơi. Mọi người lo lắng về lạm phát.",
+    qVN:"Tổ chức nào có quyền lực kiểm soát lạm phát?",
+    ch:["Vietcombank", "Investment Bank", "Central Bank", "Ministry of Finance"],
+    chVN:["Vietcombank", "Ngân hàng Đầu tư", "Ngân hàng Trung ương", "Bộ Tài chính"],
+    ans:2, exp:"Controlling inflation is one of the five core functions of a Central Bank.",
+    tEn:"Control Inflation", tVn:"Kiểm soát lạm phát"},
 
-  { id:3, cat:"Bank Types", lv:"L1", role:"🏛️ Governor",
-    ctx:"You are the Governor. You do NOT serve regular customers. Instead, you control all other banks, manage the national money supply, and issue banknotes.",
-    q:"What institution do you lead?",
-    ctxVN:"Bạn là Thống đốc. Bạn KHÔNG phục vụ khách hàng thường. Thay vào đó, bạn kiểm soát tất cả ngân hàng khác, quản lý lượng tiền quốc gia và phát hành tiền giấy.",
-    qVN:"Bạn đang lãnh đạo tổ chức nào?",
-    ch:["Retail Bank","Corporate Bank","Central Bank","Investment Bank"],
-    chVN:["Ngân hàng Bán lẻ","Ngân hàng Doanh nghiệp","Ngân hàng Trung ương","Ngân hàng Đầu tư"],
-    ans:2, exp:"Central Bank (SBV in Vietnam, Fed in USA). Controls money supply, sets base rates, issues banknotes. Never serves individual customers.",
-    tEn:"Central Bank", tVn:"Ngân hàng Trung ương (SBV / Fed)"},
+  { id:3, cat:"Central Bank", lv:"L1", role:"🏛️ Governor",
+    ctx:"In Vietnam, the Central Bank is the State Bank of Vietnam (SBV).",
+    q:"What is the Central Bank in the US called?",
+    ctxVN:"Ở Việt Nam, NHTW là Ngân hàng Nhà nước (SBV).",
+    qVN:"Ngân hàng Trung ương ở Mỹ gọi là gì?",
+    ch:["Goldman Sachs", "Federal Reserve (Fed)", "JP Morgan", "Bank of America"],
+    chVN:["Goldman Sachs", "Cục Dự trữ Liên bang (Fed)", "JP Morgan", "Bank of America"],
+    ans:1, exp:"The Federal Reserve (often called the Fed) is the central banking system of the United States.",
+    tEn:"Federal Reserve", tVn:"Cục Dự trữ Liên bang Mỹ"},
 
-  { id:4, cat:"Bank Types", lv:"L1", role:"💼 VP",
-    ctx:"Your clients are ONLY large corporations and governments. You help them issue stocks and bonds to raise capital. You also advise on Mergers & Acquisitions. You do NOT take deposits from the public.",
-    q:"What type of bank do you work for?",
-    ctxVN:"Khách hàng của bạn CHỈ là các tập đoàn lớn và chính phủ. Bạn giúp họ phát hành cổ phiếu, trái phiếu để huy động vốn. Bạn cũng tư vấn Mua bán & Sáp nhập. Bạn KHÔNG nhận tiền gửi từ công chúng.",
-    qVN:"Bạn làm việc cho loại ngân hàng nào?",
-    ch:["Commercial Bank","Central Bank","Retail Bank","Investment Bank"],
-    chVN:["Ngân hàng Thương mại","Ngân hàng Trung ương","Ngân hàng Bán lẻ","Ngân hàng Đầu tư"],
-    ans:3, exp:"Investment Bank — capital markets, M&A advisory, IPOs. Famous examples: Goldman Sachs, Morgan Stanley, JP Morgan.",
+  { id:4, cat:"Investment Bank", lv:"L1", role:"💼 VP",
+    ctx:"Minh's company needs $50 million to build a new factory. They need to raise capital from investors.",
+    q:"Which bank can help them?",
+    ctxVN:"Công ty Minh cần 50 triệu đô để xây nhà máy. Họ cần huy động vốn từ nhà đầu tư.",
+    qVN:"Ngân hàng nào có thể giúp họ?",
+    ch:["Central Bank", "Commercial Bank", "Investment Bank", "World Bank"],
+    chVN:["Ngân hàng Trung ương", "Ngân hàng Thương mại", "Ngân hàng Đầu tư", "Ngân hàng Thế giới"],
+    ans:2, exp:"An Investment Bank helps large corporations and governments raise capital and manage complex financial transactions.",
     tEn:"Investment Bank", tVn:"Ngân hàng Đầu tư"},
 
-  { id:5, cat:"Bank Types", lv:"L1", role:"🏢 Director",
-    ctx:"Vingroup wants to acquire a competitor. They need to raise $500M by issuing new shares to institutional investors. They need expert advisory on deal structure, valuation, and execution.",
-    q:"Which institution do they call?",
-    ctxVN:"Vingroup muốn thâu tóm một đối thủ. Họ cần huy động $500M bằng cách phát hành cổ phiếu mới cho nhà đầu tư tổ chức. Họ cần tư vấn chuyên nghiệp về cấu trúc thương vụ, định giá và thực thi.",
-    qVN:"Họ gọi cho tổ chức nào?",
-    ch:["Retail Bank","Commercial Bank","Investment Bank","Microfinance Institution"],
-    chVN:["Ngân hàng Bán lẻ","Ngân hàng Thương mại","Ngân hàng Đầu tư","Tổ chức tài chính vi mô"],
-    ans:2, exp:"Investment Banks specialize in M&A advisory and capital raising through stock/bond issuance. They connect corporations with institutional investors.",
-    tEn:"M&A (Mergers & Acquisitions)", tVn:"Mua bán & Sáp nhập doanh nghiệp"},
+  { id:5, cat:"Investment Bank", lv:"L1", role:"💼 VP",
+    ctx:"Which of the following is a famous example of an Investment Bank?",
+    q:"Choose the correct bank:",
+    ctxVN:"Đâu là một ví dụ nổi tiếng về Ngân hàng Đầu tư?",
+    qVN:"Chọn ngân hàng đúng:",
+    ch:["Techcombank", "Goldman Sachs", "Vietcombank", "BIDV"],
+    chVN:["Techcombank", "Goldman Sachs", "Vietcombank", "BIDV"],
+    ans:1, exp:"Goldman Sachs, Morgan Stanley, and JP Morgan are famous global investment banks.",
+    tEn:"Goldman Sachs", tVn:"Ngân hàng đầu tư (Mỹ)"},
 
-  { id:6, cat:"Bank Types", lv:"L1", role:"🏛️ Governor",
-    ctx:"AlphaBank (fictional) is in a severe crisis. It has run out of cash. No other commercial bank will lend to it — the interbank market is frozen with systemic risk.",
-    q:"As Central Bank, you step in to rescue AlphaBank. What is your emergency role called?",
-    ctxVN:"AlphaBank (hư cấu) đang trong khủng hoảng nghiêm trọng. Hết tiền mặt. Không ngân hàng thương mại nào dám cho vay — thị trường liên ngân hàng đóng băng vì rủi ro hệ thống.",
-    qVN:"Với tư cách là Ngân hàng Trung ương, bạn bơm tiền cứu AlphaBank. Vai trò khẩn cấp này gọi là gì?",
-    ch:["Market Maker","Lender of Last Resort","Clearing House","Hedge Fund"],
-    chVN:["Nhà tạo lập thị trường","Người cho vay cuối cùng","Trung tâm thanh toán bù trừ","Quỹ phòng hộ"],
-    ans:1, exp:"Lender of Last Resort — the Central Bank's emergency role. When all other funding sources fail, the Central Bank injects liquidity to prevent systemic collapse.",
-    tEn:"Lender of Last Resort", tVn:"Người cho vay cuối cùng"},
+  { id:6, cat:"Investment Bank", lv:"L1", role:"💼 VP",
+    ctx:"An Investment Bank helps companies with IPOs and M&A.",
+    q:"Do Investment Banks accept deposits from individuals like Minh?",
+    ctxVN:"Ngân hàng đầu tư giúp công ty làm IPO và M&A.",
+    qVN:"Họ có nhận tiền gửi từ khách hàng cá nhân như Minh không?",
+    ch:["Yes, always", "No, they don't", "Only for students", "Only saving accounts"],
+    chVN:["Có, luôn luôn", "Không, họ không nhận", "Chỉ sinh viên", "Chỉ tài khoản tiết kiệm"],
+    ans:1, exp:"Investment Banks do NOT accept deposits from individuals and do NOT give personal loans.",
+    tEn:"No personal services", tVn:"Không phục vụ cá nhân"},
 
-  // ── Level 2: Deposits & Funding ──────────────────────
-  { id:7, cat:"Deposits", lv:"L2", role:"🏦 Branch Manager",
-    ctx:"A customer walks into your branch and hands you cash. They want you to hold it in their account, keep it safe, and pay them a small return.",
-    q:"What is this action called?",
-    ctxVN:"Một khách hàng bước vào chi nhánh và đưa tiền mặt cho bạn. Họ muốn bạn giữ trong tài khoản, bảo quản an toàn và trả cho họ một khoản lãi nhỏ.",
-    qVN:"Hành động này gọi là gì?",
-    ch:["Loan","Deposit","Withdrawal","Overdraft"],
-    chVN:["Cho vay","Tiền gửi","Rút tiền","Thấu chi"],
-    ans:1, exp:"Deposit — money placed in the bank. The bank keeps it safe and pays interest. This is the bank's primary funding source for making loans.",
-    tEn:"Deposit", tVn:"Tiền gửi"},
+  { id:7, cat:"Commercial Bank", lv:"L1", role:"👤 Minh",
+    ctx:"Minh earns $800/month. He wants to save money and get a personal loan.",
+    q:"Which bank is right for him?",
+    ctxVN:"Minh kiếm được 800 đô/tháng. Cậu ấy muốn tiết kiệm và vay cá nhân.",
+    qVN:"Ngân hàng nào phù hợp với Minh?",
+    ch:["Central Bank", "Commercial Bank", "Investment Bank", "Federal Reserve"],
+    chVN:["Ngân hàng Trung ương", "Ngân hàng Thương mại", "Ngân hàng Đầu tư", "Cục Dự trữ Liên bang"],
+    ans:1, exp:"A Commercial Bank provides everyday financial services to individuals and businesses.",
+    tEn:"Commercial Bank", tVn:"Ngân hàng Thương mại"},
 
-  { id:8, cat:"Deposits", lv:"L2", role:"🏦 Branch Manager",
-    ctx:"A customer wants an account with maximum FLEXIBILITY. They want to be able to withdraw their money instantly at any time, even if the interest rate offered is very low.",
-    q:"What type of account do you open for them?",
-    ctxVN:"Khách muốn tài khoản LINH HOẠT tối đa. Họ muốn có thể rút tiền ngay lập tức bất cứ lúc nào, dù lãi suất được trả rất thấp.",
-    qVN:"Bạn mở loại tài khoản nào cho họ?",
-    ch:["Fixed Deposit","Savings Account","Mortgage","Treasury Bill"],
-    chVN:["Tiết kiệm có kỳ hạn","Tài khoản tiết kiệm","Vay mua nhà","Tín phiếu kho bạc"],
-    ans:1, exp:"Savings Account — high liquidity, low interest. Withdraw anytime. Key tradeoff: flexibility vs. yield. Opposite of Fixed Deposit.",
-    tEn:"Savings Account", tVn:"Tài khoản tiết kiệm (không kỳ hạn)"},
+  { id:8, cat:"Commercial Bank", lv:"L1", role:"🏦 Banker",
+    ctx:"Vietcombank, BIDV, Techcombank, ACB, and MB Bank are all examples of...",
+    q:"What type of bank?",
+    ctxVN:"Vietcombank, BIDV, Techcombank, ACB, và MB Bank là ví dụ về...",
+    qVN:"Loại ngân hàng nào?",
+    ch:["Central Banks", "Investment Banks", "Commercial Banks", "Foreign Banks"],
+    chVN:["NHTW", "NH Đầu tư", "NH Thương mại", "NH Nước ngoài"],
+    ans:2, exp:"These are familiar examples of Commercial Banks operating in Vietnam.",
+    tEn:"Commercial Bank", tVn:"Ngân hàng Thương mại"},
 
-  { id:9, cat:"Deposits", lv:"L2", role:"🏦 Branch Manager",
-    ctx:"Another customer has $50,000 in idle cash. They want the HIGHEST possible interest rate and are willing to promise not to touch the money for exactly 12 months.",
-    q:"Which product do you recommend?",
-    ctxVN:"Một khách khác có $50,000 nhàn rỗi. Họ muốn lãi suất CAO NHẤT có thể và sẵn sàng cam kết không rút tiền trong đúng 12 tháng.",
-    qVN:"Bạn đề xuất sản phẩm nào?",
-    ch:["Savings Account","Checking Account","Fixed Deposit","Overdraft"],
-    chVN:["Tài khoản tiết kiệm","Tài khoản thanh toán","Tiết kiệm có kỳ hạn","Thấu chi"],
-    ans:2, exp:"Fixed Deposit — lock capital for a set period in exchange for a higher yield. No early withdrawal without penalty. Higher rate = bank can plan longer-term use of funds.",
+  // ── Commercial Bank Divisions (Retail & Corporate) ──
+  { id: 9, cat: "Commercial Bank", lv: "L1", role: "🏦 Banker",
+    ctx: "Inside a commercial bank, this division focuses ONLY on individual customers like Minh (savings, personal loans).",
+    q: "What is this division called?",
+    ctxVN: "Trong ngân hàng thương mại, mảng này CHỈ tập trung vào cá nhân như Minh (tiết kiệm, vay tiêu dùng).",
+    qVN: "Mảng này gọi là gì?",
+    ch: ["Corporate Banking", "Retail Banking", "Investment Banking", "Central Banking"],
+    chVN: ["Ngân hàng Doanh nghiệp", "Ngân hàng Bán lẻ", "Ngân hàng Đầu tư", "Ngân hàng Trung ương"],
+    ans: 1, exp: "Retail Banking provides services exclusively to individual consumers rather than large companies.",
+    tEn: "Retail Banking", tVn: "Ngân hàng bán lẻ"},
+
+  { id: 10, cat: "Commercial Bank", lv: "L1", role: "🏢 Director",
+    ctx: "This division of a commercial bank serves businesses. It provides services like payroll and business loans.",
+    q: "What is this division called?",
+    ctxVN: "Mảng này của NH thương mại phục vụ các doanh nghiệp. Cung cấp dịch vụ trả lương và vay kinh doanh.",
+    qVN: "Mảng này gọi là gì?",
+    ch: ["Retail Banking", "Investment Banking", "Corporate Banking", "Central Banking"],
+    chVN: ["Ngân hàng Bán lẻ", "Ngân hàng Đầu tư", "Ngân hàng Doanh nghiệp", "Ngân hàng Trung ương"],
+    ans: 2, exp: "Corporate Banking is the division of a bank that deals specifically with corporate and business clients.",
+    tEn: "Corporate Banking", tVn: "Ngân hàng doanh nghiệp"},
+
+  { id: 11, cat: "Review", lv: "L2", role: "🎓 Student",
+    ctx: "Retail Banking and Corporate Banking are usually two main divisions inside which type of bank?",
+    q: "Choose the correct umbrella term:",
+    ctxVN: "Ngân hàng Bán lẻ và Doanh nghiệp thường là hai mảng chính nằm trong loại ngân hàng nào?",
+    qVN: "Chọn thuật ngữ khái quát đúng:",
+    ch: ["Central Bank", "Commercial Bank", "Investment Bank", "World Bank"],
+    chVN: ["Ngân hàng Trung ương", "Ngân hàng Thương mại", "Ngân hàng Đầu tư", "Ngân hàng Thế giới"],
+    ans: 1, exp: "A Commercial Bank contains both Retail Banking (for individuals) and Corporate Banking (for businesses).",
+    tEn: "Commercial Bank", tVn: "Ngân hàng Thương mại"},
+
+  // ── Accepting Deposits ──────────────────────────────
+  { id:12, cat:"Deposits", lv:"L2", role:"🏦 Banker",
+    ctx:"Instead of keeping cash at home (which is risky), people put money in the bank.",
+    q:"What is this core function called?",
+    ctxVN:"Thay vì giữ tiền ở nhà rất rủi ro, mọi người đưa tiền vào ngân hàng.",
+    qVN:"Chức năng cốt lõi này gọi là gì?",
+    ch:["Lending", "Accepting Deposits", "Issuing Currency", "M&A Advisory"],
+    chVN:["Cho vay", "Nhận tiền gửi", "Phát hành tiền", "Tư vấn M&A"],
+    ans:1, exp:"Accepting Deposits is when a bank receives money, keeps it safe, and pays interest.",
+    tEn:"Accepting Deposits", tVn:"Nhận tiền gửi"},
+
+  { id:13, cat:"Deposits", lv:"L2", role:"👤 Minh",
+    ctx:"Minh wants to save for his motorbike. He needs to withdraw the money anytime he wants.",
+    q:"Which account should he use?",
+    ctxVN:"Minh muốn tiết kiệm tiền mua xe. Cậu ấy cần rút tiền ra bất cứ lúc nào.",
+    qVN:"Minh nên dùng tài khoản nào?",
+    ch:["Fixed Deposit", "Savings Account", "Business Account", "Mortgage"],
+    chVN:["Tiết kiệm có kỳ hạn", "Tài khoản tiết kiệm", "Tài khoản doanh nghiệp", "Vay mua nhà"],
+    ans:1, exp:"A Savings Account allows you to earn interest and withdraw your money at any time.",
+    tEn:"Savings Account", tVn:"Tài khoản tiết kiệm"},
+
+  { id:14, cat:"Deposits", lv:"L2", role:"👤 Minh",
+    ctx:"Minh receives his salary and pays his bills using this account. It has no limit on daily transactions.",
+    q:"Which account is this?",
+    ctxVN:"Minh nhận lương và thanh toán hóa đơn bằng tài khoản này. Nó không giới hạn số lần giao dịch.",
+    qVN:"Đây là tài khoản gì?",
+    ch:["Current Account", "Fixed Deposit", "Savings Account", "Investment Account"],
+    chVN:["Tài khoản thanh toán", "Tiết kiệm có kỳ hạn", "Tài khoản tiết kiệm", "Tài khoản đầu tư"],
+    ans:0, exp:"A Current Account is designed for daily transactions and typically earns little or no interest.",
+    tEn:"Current Account", tVn:"Tài khoản thanh toán"},
+
+  { id:15, cat:"Deposits", lv:"L2", role:"👤 Minh",
+    ctx:"Minh has $2,000. He promises NOT to touch it for 6 months to get a higher interest rate (7%).",
+    q:"What type of account is this?",
+    ctxVN:"Minh có $2,000. Cậu cam kết KHÔNG đụng đến nó trong 6 tháng để nhận lãi suất cao (7%).",
+    qVN:"Đây là tài khoản gì?",
+    ch:["Current Account", "Savings Account", "Fixed Deposit", "Credit Card"],
+    chVN:["Tài khoản thanh toán", "Tài khoản tiết kiệm", "Tiết kiệm có kỳ hạn", "Thẻ tín dụng"],
+    ans:2, exp:"A Fixed Deposit locks your money for a set period in exchange for a higher interest rate.",
     tEn:"Fixed Deposit", tVn:"Tiết kiệm có kỳ hạn"},
 
-  { id:10, cat:"Deposits", lv:"L2", role:"📊 Credit Analyst",
-    ctx:"Your bank charges 9% per year on business loans. But it only pays 4% per year to depositors who store money with you.",
-    q:"What is this 5% profit margin officially called?",
-    ctxVN:"Ngân hàng của bạn tính 9%/năm cho các khoản vay kinh doanh. Nhưng chỉ trả 4%/năm cho người gửi tiền.",
-    qVN:"Biên lợi nhuận 5% này chính thức gọi là gì?",
-    ch:["Capital Gain","Dividend Yield","Net Interest Margin (NIM)","Liquidity Premium"],
-    chVN:["Lãi vốn","Lợi suất cổ tức","Biên lãi suất thuần (NIM)","Phí thanh khoản"],
-    ans:2, exp:"Net Interest Margin (NIM) — the core profit engine of commercial banks. NIM = Loan Rate − Deposit Rate. A higher NIM means a more profitable bank.",
-    tEn:"Net Interest Margin (NIM)", tVn:"Biên lãi suất thuần"},
+  // ── Lending ──────────────────────────────
+  { id:16, cat:"Lending", lv:"L3", role:"🏦 Banker",
+    ctx:"Banks lend money to borrowers and charge them interest.",
+    q:"What is this core function called?",
+    ctxVN:"Ngân hàng đưa tiền cho khách vay và thu tiền lãi.",
+    qVN:"Chức năng này gọi là gì?",
+    ch:["Accepting Deposits", "Payment Services", "Lending", "Underwriting"],
+    chVN:["Nhận tiền gửi", "Dịch vụ thanh toán", "Cho vay (Cấp tín dụng)", "Bảo lãnh phát hành"],
+    ans:2, exp:"Lending is the bank's second core function and its primary way of making a profit.",
+    tEn:"Lending", tVn:"Cho vay / Cấp tín dụng"},
 
-  { id:11, cat:"Deposits", lv:"L2", role:"🏦 Branch Manager",
-    ctx:"You are explaining your bank's services to a new customer. They ask you: what is the percentage your bank charges people for the privilege of borrowing money?",
-    q:"What is this rate called?",
-    ctxVN:"Bạn đang giải thích dịch vụ ngân hàng cho khách hàng mới. Họ hỏi: tỷ lệ phần trăm mà ngân hàng tính cho người có đặc quyền vay tiền gọi là gì?",
-    qVN:"Tỷ lệ này gọi là gì?",
-    ch:["Tax Rate","Interest Rate","Exchange Rate","Dividend"],
-    chVN:["Thuế suất","Lãi suất","Tỷ giá hối đoái","Cổ tức"],
-    ans:1, exp:"Interest Rate — the price of borrowing money. Banks earn interest on loans (revenue) and pay interest on deposits (cost). The gap = NIM = profit.",
-    tEn:"Interest Rate", tVn:"Lãi suất"},
+  { id:17, cat:"Lending", lv:"L3", role:"🏦 Banker",
+    ctx:"Banks charge a higher interest rate to borrowers, and pay a lower interest rate to depositors.",
+    q:"The difference between these two rates is the bank's...",
+    ctxVN:"Ngân hàng thu lãi cao từ người vay, và trả lãi thấp cho người gửi.",
+    qVN:"Sự chênh lệch giữa hai mức lãi này chính là... của ngân hàng?",
+    ch:["Loss", "Profit", "Collateral", "Default"],
+    chVN:["Lỗ", "Lợi nhuận", "Tài sản thế chấp", "Vỡ nợ"],
+    ans:1, exp:"The bank's profit comes primarily from the margin between the loan rate and the deposit rate.",
+    tEn:"Profit", tVn:"Lợi nhuận"},
 
-  // ── Level 3: Lending & Credit ─────────────────────────
-  { id:12, cat:"Lending", lv:"L3", role:"💳 Credit Officer",
-    ctx:"You are a Credit Officer. A customer submits an application — they need capital to start a business. You review their financials, assess their creditworthiness, and approve the request.",
-    q:"What are you giving them?",
-    ctxVN:"Bạn là Chuyên viên Tín dụng. Khách hàng nộp đơn — họ cần vốn để khởi nghiệp. Bạn xem xét tình hình tài chính, đánh giá mức tín nhiệm và phê duyệt yêu cầu.",
-    qVN:"Bạn đang cấp gì cho họ?",
-    ch:["Deposit","Loan / Lending","Dividend","Equity"],
-    chVN:["Tiền gửi","Khoản vay / Cho vay","Cổ tức","Vốn chủ sở hữu"],
-    ans:1, exp:"Lending (Loan) — the bank's core function #2. It lends depositors' money to creditworthy borrowers at a higher rate, earning NIM as the spread.",
-    tEn:"Lending", tVn:"Cho vay"},
-
-  { id:13, cat:"Lending", lv:"L3", role:"💳 Credit Officer",
-    ctx:"A young couple wants to buy an apartment worth 3 billion VND. They only have 1 billion in savings. They need you to finance the remaining 2 billion over 20 years — with the apartment itself pledged as security.",
-    q:"What type of loan is this?",
-    ctxVN:"Một cặp trẻ muốn mua căn hộ 3 tỷ đồng. Họ chỉ có 1 tỷ tiết kiệm. Họ cần bạn tài trợ 2 tỷ còn lại trong 20 năm — với chính căn hộ đó làm tài sản đảm bảo.",
-    qVN:"Đây là loại vay gì?",
-    ch:["Overdraft","Corporate Loan","Trade Finance","Mortgage"],
-    chVN:["Thấu chi","Vay doanh nghiệp","Tài trợ thương mại","Vay mua nhà"],
-    ans:3, exp:"Mortgage — a long-term loan secured by real estate. If the borrower defaults, the bank can seize and sell the property to recover funds.",
-    tEn:"Mortgage", tVn:"Vay mua nhà (có thế chấp)"},
-
-  { id:14, cat:"Lending", lv:"L3", role:"💳 Credit Officer",
-    ctx:"A tech startup wants to borrow 5 billion VND. Startups are high-risk — no revenue history. You agree to lend, but require the CEO to pledge their personal house as security in case of default.",
-    q:"In banking terms, what is the house called?",
-    ctxVN:"Một startup công nghệ muốn vay 5 tỷ đồng. Startup rủi ro cao — không có lịch sử doanh thu. Bạn đồng ý cho vay, nhưng yêu cầu CEO thế chấp nhà riêng làm đảm bảo phòng trường hợp vỡ nợ.",
-    qVN:"Trong thuật ngữ ngân hàng, căn nhà đó gọi là gì?",
-    ch:["Collateral","Equity","Dividend","Fixed Deposit"],
-    chVN:["Tài sản thế chấp","Vốn chủ sở hữu","Cổ tức","Tiết kiệm có kỳ hạn"],
-    ans:0, exp:"Collateral — an asset pledged to the bank to reduce credit risk. If the borrower defaults, the bank has legal rights to seize and sell it to recover the loan.",
+  { id:18, cat:"Lending", lv:"L3", role:"👤 Minh",
+    ctx:"Minh borrows money to buy a motorbike. If he doesn't repay, the bank will take the motorbike.",
+    q:"What is the motorbike called in banking terms?",
+    ctxVN:"Minh vay tiền mua xe. Nếu không trả nợ, ngân hàng sẽ thu chiếc xe đó.",
+    qVN:"Chiếc xe được gọi là gì trong thuật ngữ ngân hàng?",
+    ch:["Interest", "Default", "Collateral", "Deposit"],
+    chVN:["Tiền lãi", "Vỡ nợ", "Tài sản thế chấp", "Tiền gửi"],
+    ans:2, exp:"Collateral is an asset pledged by the borrower to secure a loan.",
     tEn:"Collateral", tVn:"Tài sản thế chấp"},
 
-  { id:15, cat:"Lending", lv:"L3", role:"💳 Credit Officer",
-    ctx:"A borrower you approved 6 months ago has completely stopped making payments. They have disappeared and cannot be contacted. The loan is now irrecoverable.",
-    q:"What event has just occurred?",
-    ctxVN:"Người vay mà bạn đã phê duyệt 6 tháng trước đã hoàn toàn ngừng thanh toán. Họ mất tích và không liên lạc được. Khoản vay nay không thể thu hồi.",
-    qVN:"Sự kiện gì vừa xảy ra?",
-    ch:["Deposit","Default","Dividend","Discount"],
-    chVN:["Tiền gửi","Vỡ nợ","Cổ tức","Chiết khấu"],
-    ans:1, exp:"Default — failure to repay a loan. The bank activates its right to seize collateral. High default rates destroy bank profitability and erode capital.",
-    tEn:"Default", tVn:"Vỡ nợ / Mất khả năng hoàn trả"},
+  { id:19, cat:"Lending", lv:"L3", role:"👤 Minh",
+    ctx:"Minh borrows $1,500. The bank requires him to pay an extra 10% per year for using their money.",
+    q:"What is this 10% called?",
+    ctxVN:"Minh vay $1,500. Ngân hàng yêu cầu trả thêm 10%/năm vì đã dùng tiền của họ.",
+    qVN:"10% này gọi là gì?",
+    ch:["Collateral", "Interest Rate", "Default", "Dividend"],
+    chVN:["Tài sản thế chấp", "Lãi suất", "Vỡ nợ", "Cổ tức"],
+    ans:1, exp:"Interest Rate is the cost of borrowing money, calculated as a percentage.",
+    tEn:"Interest Rate", tVn:"Lãi suất"},
 
-  // ── Level 4: Payments & Cards ─────────────────────────
-  { id:16, cat:"Payments", lv:"L4", role:"💳 Operations Director",
-    ctx:"A customer wants a payment card for online shopping. They are very clear: they ONLY want to spend money they already HAVE in their account. They do not want to borrow anything from the bank.",
-    q:"Which card do you issue?",
-    ctxVN:"Khách hàng muốn thẻ thanh toán để mua sắm online. Họ rất rõ ràng: chỉ muốn dùng tiền họ ĐÃ CÓ trong tài khoản. Họ không muốn vay gì từ ngân hàng.",
-    qVN:"Bạn cấp loại thẻ nào?",
-    ch:["Credit Card","Debit Card","Overdraft","Letter of Credit"],
-    chVN:["Thẻ tín dụng","Thẻ ghi nợ","Thấu chi","Thư tín dụng"],
-    ans:1, exp:"Debit Card — directly linked to the customer's own account balance. Every transaction immediately deducts actual funds. No credit, no debt.",
-    tEn:"Debit Card", tVn:"Thẻ ghi nợ (tiêu tiền của mình)"},
+  { id:20, cat:"Lending", lv:"L3", role:"🏦 Banker",
+    ctx:"This is the worst-case scenario. The borrower completely fails to repay the loan.",
+    q:"What is this situation called?",
+    ctxVN:"Đây là kịch bản tồi tệ nhất. Người vay hoàn toàn không thể trả nợ.",
+    qVN:"Tình huống này gọi là gì?",
+    ch:["Default", "Collateral", "Deposit", "Withdrawal"],
+    chVN:["Vỡ nợ", "Tài sản thế chấp", "Gửi tiền", "Rút tiền"],
+    ans:0, exp:"Default occurs when a borrower cannot make the required payments on their debt.",
+    tEn:"Default", tVn:"Vỡ nợ"},
 
-  { id:17, cat:"Payments", lv:"L4", role:"💳 Operations Director",
-    ctx:"Another customer wants the bank to give them a $2,000 monthly spending limit — they SPEND first, then pay back at the end of each month. Late payments trigger penalty interest at very high rates.",
-    q:"What type of card is this?",
-    ctxVN:"Một khách khác muốn ngân hàng cho hạn mức $2,000/tháng — họ TIÊU trước, rồi trả vào cuối mỗi tháng. Thanh toán muộn bị tính lãi phạt rất cao.",
-    qVN:"Đây là loại thẻ gì?",
-    ch:["Prepaid Card","Debit Card","Credit Card","Corporate Card"],
-    chVN:["Thẻ trả trước","Thẻ ghi nợ","Thẻ tín dụng","Thẻ doanh nghiệp"],
-    ans:2, exp:"Credit Card — essentially a short-term unsecured loan. The bank extends a credit line; unpaid balances accrue high interest. A major bank revenue source.",
-    tEn:"Credit Card", tVn:"Thẻ tín dụng (tiêu trước, trả sau)"},
+  { id:21, cat:"Lending", lv:"L3", role:"👤 Minh",
+    ctx:"Minh wants to borrow money to buy a motorbike, electronics, or furniture. The term is 12-60 months.",
+    q:"What type of loan is this?",
+    ctxVN:"Minh muốn vay tiền mua xe máy, đồ điện tử. Thời hạn 12-60 tháng.",
+    qVN:"Đây là loại vay gì?",
+    ch:["Mortgage", "Business Loan", "Personal Loan", "Government Loan"],
+    chVN:["Vay thế chấp mua nhà", "Vay kinh doanh", "Vay tiêu dùng cá nhân", "Vay chính phủ"],
+    ans:2, exp:"A Personal Loan is given to individuals for personal use, like buying a motorbike or a laptop.",
+    tEn:"Personal Loan", tVn:"Vay cá nhân (tiêu dùng)"},
 
-  { id:18, cat:"Payments", lv:"L4", role:"💳 Operations Director",
-    ctx:"A long-standing corporate client has an excellent credit history. Their account balance just hit $0, but they urgently need to pay employee salaries TODAY. You allow them to withdraw slightly more than their balance for a short period.",
-    q:"What is this banking service called?",
-    ctxVN:"Một khách doanh nghiệp lâu năm có lịch sử tín dụng xuất sắc. Số dư tài khoản vừa về $0, nhưng họ cần trả lương nhân viên khẩn cấp NGAY HÔM NAY. Bạn cho phép họ rút lố một chút trong thời gian ngắn.",
-    qVN:"Dịch vụ ngân hàng này gọi là gì?",
-    ch:["Overdraft","Mortgage","Fixed Deposit","Bailout"],
-    chVN:["Thấu chi","Vay mua nhà","Tiết kiệm có kỳ hạn","Gói cứu trợ"],
-    ans:0, exp:"Overdraft — a pre-approved credit line attached to a checking account. Allows temporary negative balance up to a set limit. Bank charges interest on the overdrawn amount.",
-    tEn:"Overdraft", tVn:"Thấu chi (rút lố tài khoản hợp pháp)"},
+  { id:22, cat:"Lending", lv:"L3", role:"🏦 Banker",
+    ctx:"A customer wants to buy a house. They need a long-term loan (10-30 years).",
+    q:"What type of loan is this?",
+    ctxVN:"Khách hàng muốn mua một căn nhà. Họ cần khoản vay dài hạn (10-30 năm).",
+    qVN:"Đây là loại vay gì?",
+    ch:["Personal Loan", "Business Loan", "Mortgage", "Auto Loan"],
+    chVN:["Vay cá nhân", "Vay kinh doanh", "Vay thế chấp mua nhà", "Vay mua ô tô"],
+    ans:2, exp:"A Mortgage is a long-term loan specifically designed for buying real estate.",
+    tEn:"Mortgage", tVn:"Vay thế chấp mua nhà"},
 
-  { id:19, cat:"Payments", lv:"L4", role:"🌐 Operations Director",
-    ctx:"A garment company needs to make an urgent $2 million USD payment to a business partner in Tokyo, Japan. The money must travel internationally through the banking network.",
-    q:"Which global messaging network does your bank use for this transfer?",
-    ctxVN:"Một công ty may mặc cần thanh toán khẩn $2 triệu USD cho đối tác kinh doanh tại Tokyo, Nhật Bản. Tiền phải di chuyển quốc tế qua mạng lưới ngân hàng.",
-    qVN:"Mạng lưới nhắn tin toàn cầu nào mà ngân hàng của bạn sử dụng cho giao dịch này?",
-    ch:["Visa Network","SWIFT","Blockchain","Forex Spot"],
-    chVN:["Mạng Visa","SWIFT","Blockchain","Giao dịch Forex ngay"],
-    ans:1, exp:"SWIFT (Society for Worldwide Interbank Financial Telecommunication) — the backbone of international banking. Used for virtually all cross-border bank transfers.",
-    tEn:"SWIFT Transfer", tVn:"Hệ thống chuyển tiền quốc tế"},
+  // ── Collocations: Deposits ──────────────────────────────
+  { id:23, cat:"Collocations", lv:"L4", role:"📝 Grammar",
+    ctx:"Collocation for putting money into your bank account.",
+    q:"Every month, Minh _____ a deposit of $800.",
+    ctxVN:"Cụm từ chỉ việc gửi tiền vào tài khoản.",
+    qVN:"Điền từ: Every month, Minh _____ a deposit of $800.",
+    ch:["makes", "does", "takes", "gives"],
+    chVN:["makes", "does", "takes", "gives"],
+    ans:0, exp:"The correct collocation is 'make a deposit'.",
+    tEn:"Make a deposit", tVn:"Gửi tiền vào"},
 
-  { id:20, cat:"Payments", lv:"L4", role:"🏢 Corporate Banker",
-    ctx:"A Vietnamese manufacturer imports machinery from Germany. The German supplier refuses to ship without payment certainty. Your bank steps in — issuing a formal guarantee that payment will be made, allowing the deal to proceed.",
-    q:"What banking service area does this fall under?",
-    ctxVN:"Một nhà sản xuất VN nhập khẩu máy móc từ Đức. Nhà cung cấp Đức từ chối giao hàng khi chưa chắc chắn về thanh toán. Ngân hàng của bạn đứng ra phát hành bảo lãnh chính thức rằng thanh toán sẽ được thực hiện.",
-    qVN:"Đây thuộc lĩnh vực dịch vụ ngân hàng nào?",
-    ch:["Retail Lending","M&A Advisory","Asset Management","Trade Finance"],
-    chVN:["Cho vay bán lẻ","Tư vấn M&A","Quản lý tài sản","Tài trợ thương mại"],
-    ans:3, exp:"Trade Finance — services facilitating international trade by mitigating payment risk. Key instruments include Letters of Credit (LC) and bank guarantees.",
-    tEn:"Trade Finance", tVn:"Tài trợ thương mại"},
+  { id:24, cat:"Collocations", lv:"L4", role:"📝 Grammar",
+    ctx:"Collocation for getting profit from your savings.",
+    q:"If you put money in a savings account, you will _____ interest.",
+    ctxVN:"Cụm từ chỉ việc nhận tiền lời từ tiết kiệm.",
+    qVN:"Điền từ: You will _____ interest.",
+    ch:["win", "earn", "make", "take"],
+    chVN:["win", "earn", "make", "take"],
+    ans:1, exp:"The correct collocation is 'earn interest'.",
+    tEn:"Earn interest", tVn:"Nhận lãi"},
 
-  // ── Level 5: Forex & Markets ──────────────────────────
-  { id:21, cat:"Forex", lv:"L5", role:"💱 FX Trader",
-    ctx:"You are Head of Treasury. Your corporate client needs to convert a large amount of Vietnamese Dong (VND) into US Dollars (USD) to pay an overseas supplier.",
-    q:"Which financial market are you operating in?",
-    ctxVN:"Bạn là Trưởng phòng Ngân quỹ. Khách doanh nghiệp cần đổi một khoản lớn VND sang USD để thanh toán cho nhà cung cấp nước ngoài.",
-    qVN:"Bạn đang hoạt động trên thị trường tài chính nào?",
-    ch:["Stock Market","Foreign Exchange (Forex)","Real Estate Market","Bond Market"],
-    chVN:["Thị trường chứng khoán","Thị trường ngoại hối (Forex)","Thị trường bất động sản","Thị trường trái phiếu"],
-    ans:1, exp:"Foreign Exchange (Forex) — the global marketplace for currency trading. Banks earn revenue from the bid-ask spread on currency conversions.",
-    tEn:"Foreign Exchange (Forex)", tVn:"Thị trường ngoại hối"},
+  { id:25, cat:"Collocations", lv:"L4", role:"📝 Grammar",
+    ctx:"Collocation for taking cash out of the ATM.",
+    q:"I need to go to the ATM to _____ money.",
+    ctxVN:"Cụm từ chỉ việc rút tiền mặt từ ATM.",
+    qVN:"Điền từ: I need to _____ money.",
+    ch:["deposit", "open", "withdraw", "repay"],
+    chVN:["deposit", "open", "withdraw", "repay"],
+    ans:2, exp:"The correct collocation is 'withdraw money'.",
+    tEn:"Withdraw money", tVn:"Rút tiền"},
 
-  { id:22, cat:"Forex", lv:"L5", role:"💱 FX Trader",
-    ctx:"A foreign tourist walks into your branch and hands you $1,000 in cash. They want to exchange it into Vietnamese Dong right now, at today's current market rate, so they can go shopping immediately.",
-    q:"What type of Forex transaction is this?",
-    ctxVN:"Một khách du lịch nước ngoài vào chi nhánh và đưa cho bạn $1,000 tiền mặt. Họ muốn đổi sang VND NGAY LÚC NÀY theo tỷ giá thị trường hiện tại, để đi mua sắm ngay.",
-    qVN:"Đây là loại giao dịch Forex nào?",
-    ch:["Forward Transaction","Spot Transaction","Currency Swap","Hedging"],
-    chVN:["Giao dịch kỳ hạn","Giao dịch giao ngay","Hoán đổi tiền tệ","Phòng ngừa rủi ro"],
-    ans:1, exp:"Spot Transaction — currency exchange at the current rate, settled immediately (T+2 max). The most basic Forex transaction type.",
-    tEn:"Spot Transaction", tVn:"Giao dịch giao ngay"},
+  { id:26, cat:"Collocations", lv:"L4", role:"📝 Grammar",
+    ctx:"Collocation for starting a new bank account.",
+    q:"On his first day of work, Minh went to Vietcombank to _____ an account.",
+    ctxVN:"Cụm từ chỉ việc tạo một tài khoản mới.",
+    qVN:"Điền từ: Minh went to Vietcombank to _____ an account.",
+    ch:["make", "open", "create", "start"],
+    chVN:["make", "open", "create", "start"],
+    ans:1, exp:"The correct collocation is 'open an account'. We do not use 'create' or 'make' here.",
+    tEn:"Open an account", tVn:"Mở tài khoản"},
 
-  { id:23, cat:"Forex", lv:"L5", role:"💱 FX Trader",
-    ctx:"Vietnam Airlines must purchase jet fuel in USD — in exactly 3 months. They fear the USD/VND exchange rate will rise sharply by then. They want to lock in today's USD buying rate for that future payment.",
-    q:"What contract do you sell them?",
-    ctxVN:"Vietnam Airlines phải mua nhiên liệu máy bay bằng USD — trong đúng 3 tháng nữa. Họ lo tỷ giá USD/VND sẽ tăng mạnh vào lúc đó. Họ muốn chốt tỷ giá mua USD hôm nay cho khoản thanh toán tương lai đó.",
-    qVN:"Bạn bán cho họ loại hợp đồng nào?",
-    ch:["Forward Transaction","Spot Transaction","Equity Share","Corporate Bond"],
-    chVN:["Giao dịch kỳ hạn","Giao dịch giao ngay","Cổ phiếu","Trái phiếu doanh nghiệp"],
-    ans:0, exp:"Forward Transaction — an agreement to exchange currency at a future date at a rate agreed TODAY. The primary corporate tool for hedging Forex risk.",
-    tEn:"Forward Transaction", tVn:"Giao dịch kỳ hạn (chốt tỷ giá tương lai)"},
+  // ── Collocations: Lending ──────────────────────────────
+  { id:27, cat:"Collocations", lv:"L4", role:"📝 Grammar",
+    ctx:"Collocation for officially asking the bank for a loan.",
+    q:"Minh needed money for a motorbike, so he decided to _____ for a loan.",
+    ctxVN:"Cụm từ chỉ việc nộp đơn xin vay vốn.",
+    qVN:"Điền từ: Minh decided to _____ for a loan.",
+    ch:["ask", "call", "apply", "make"],
+    chVN:["ask", "call", "apply", "make"],
+    ans:2, exp:"The correct collocation is 'apply for a loan'.",
+    tEn:"Apply for a loan", tVn:"Làm thủ tục / Nộp đơn vay"},
 
-  { id:24, cat:"Forex", lv:"L5", role:"💱 FX Trader",
-    ctx:"Your corporate client just bought that Forward contract specifically to protect themselves from negative currency movements. They are NOT trying to profit from rate changes — just protect against them.",
-    q:"What financial strategy are they using?",
-    ctxVN:"Khách doanh nghiệp vừa mua hợp đồng kỳ hạn đó chuyên để bảo vệ mình khỏi biến động tiền tệ bất lợi. Họ KHÔNG cố kiếm lời từ thay đổi tỷ giá — chỉ muốn bảo vệ trước chúng.",
-    qVN:"Họ đang sử dụng chiến lược tài chính nào?",
-    ch:["Speculation","Hedging","Arbitrage","Leverage"],
-    chVN:["Đầu cơ","Phòng ngừa rủi ro (Hedging)","Kinh doanh chênh lệch giá","Đòn bẩy tài chính"],
-    ans:1, exp:"Hedging — using financial instruments to reduce or eliminate exposure to risk. The opposite of speculation. Businesses hedge to protect profit margins from market volatility.",
-    tEn:"Hedging", tVn:"Phòng ngừa rủi ro"},
+  { id:28, cat:"Collocations", lv:"L4", role:"📝 Grammar",
+    ctx:"Collocation for the bank approving and giving the loan.",
+    q:"After reviewing his documents, the bank decided to _____ him a loan.",
+    ctxVN:"Cụm từ chỉ việc ngân hàng phê duyệt khoản vay.",
+    qVN:"Điền từ: The bank decided to _____ him a loan.",
+    ch:["grant", "apply", "deposit", "default"],
+    chVN:["grant", "apply", "deposit", "default"],
+    ans:0, exp:"The correct collocation is 'grant a loan' (from the bank's perspective).",
+    tEn:"Grant a loan", tVn:"Chấp thuận khoản vay"},
 
-  { id:25, cat:"Forex", lv:"L5", role:"🏛️ Governor",
-    ctx:"The government of Vietnam intentionally and officially LOWERS the value of the Vietnamese Dong against the USD. The goal is to make Vietnamese export goods cheaper and more competitive in international markets.",
-    q:"What is this deliberate currency policy called?",
-    ctxVN:"Chính phủ Việt Nam cố ý và chính thức HẠ GIÁ đồng Việt Nam so với USD. Mục tiêu là làm cho hàng xuất khẩu VN rẻ hơn và cạnh tranh hơn trên thị trường quốc tế.",
-    qVN:"Chính sách tiền tệ có chủ đích này gọi là gì?",
-    ch:["Inflation","Revaluation","Devaluation","Speculation"],
-    chVN:["Lạm phát","Tái định giá (nâng giá)","Phá giá tiền tệ","Đầu cơ"],
-    ans:2, exp:"Devaluation — intentionally reducing a currency's value vs. others. Boosts exports (cheaper for foreign buyers) but raises import costs and can trigger inflation.",
-    tEn:"Devaluation", tVn:"Phá giá tiền tệ"},
+  { id:29, cat:"Collocations", lv:"L4", role:"📝 Grammar",
+    ctx:"Collocation for paying back the borrowed money.",
+    q:"Minh has to _____ his loan in 24 monthly installments.",
+    ctxVN:"Cụm từ chỉ việc trả nợ lại cho ngân hàng.",
+    qVN:"Điền từ: Minh has to _____ his loan.",
+    ch:["repay", "refund", "return", "redo"],
+    chVN:["repay", "refund", "return", "redo"],
+    ans:0, exp:"The correct collocation is 'repay a loan'.",
+    tEn:"Repay a loan", tVn:"Trả nợ"},
 
-  // ── Level 6: Risk & Crisis ────────────────────────────
-  { id:26, cat:"Risk", lv:"L6", role:"⚠️ Chief Risk Officer",
-    ctx:"ALERT: Your bank is very profitable on paper. But ALL your capital is locked in 20-year mortgage loans. Today, unexpectedly, thousands of customers simultaneously demand to withdraw all their deposits. Your vault is completely empty.",
-    q:"What type of risk are you facing RIGHT NOW?",
-    ctxVN:"CẢNH BÁO: Ngân hàng của bạn rất có lợi nhuận trên giấy tờ. Nhưng TOÀN BỘ vốn đang kẹt trong các khoản vay thế chấp 20 năm. Hôm nay, bất ngờ, hàng nghìn khách đồng thời đòi rút toàn bộ tiền gửi. Két tiền trống rỗng.",
-    qVN:"Bạn đang đối mặt với loại rủi ro nào NGAY LÚC NÀY?",
-    ch:["Solvency Risk","Liquidity Risk","Operational Risk","Market Risk"],
-    chVN:["Rủi ro khả năng thanh toán","Rủi ro thanh khoản","Rủi ro vận hành","Rủi ro thị trường"],
-    ans:1, exp:"Liquidity Risk — having assets but no immediate CASH. The bank is technically solvent (assets > liabilities) but cannot meet short-term obligations. Fatal without Central Bank intervention.",
-    tEn:"Liquidity Risk", tVn:"Rủi ro thanh khoản"},
+  { id:30, cat:"Collocations", lv:"L4", role:"📝 Grammar",
+    ctx:"Collocation for the bank asking for interest.",
+    q:"The bank will _____ 10% interest on Minh's loan.",
+    ctxVN:"Cụm từ chỉ việc ngân hàng tính lãi suất.",
+    qVN:"Điền từ: The bank will _____ 10% interest.",
+    ch:["cost", "price", "charge", "fee"],
+    chVN:["cost", "price", "charge", "fee"],
+    ans:2, exp:"The correct collocation is 'charge interest'.",
+    tEn:"Charge interest", tVn:"Tính lãi"},
 
-  { id:27, cat:"Risk", lv:"L6", role:"⚠️ Chief Risk Officer",
-    ctx:"CODE RED: Your bank gave a massive loan to a real estate conglomerate. They have just declared bankruptcy and cannot repay a single cent. Your bank's TOTAL LIABILITIES now exceed TOTAL ASSETS.",
-    q:"What is this critical financial state called?",
-    ctxVN:"CODE ĐỎ: Ngân hàng của bạn đã cho một tập đoàn bất động sản vay khoản tiền khổng lồ. Họ vừa tuyên bố phá sản và không trả được một xu. TỔNG NỢ của ngân hàng bạn nay vượt TỔNG TÀI SẢN.",
-    qVN:"Trạng thái tài chính nghiêm trọng này gọi là gì?",
-    ch:["Liquidity Risk","Bank Run","Solvency Risk","Inflation"],
-    chVN:["Rủi ro thanh khoản","Rút tiền ồ ạt","Rủi ro mất khả năng thanh toán","Lạm phát"],
-    ans:2, exp:"Solvency Risk — the bank is technically bankrupt. Even if all assets were liquidated, total debts could not be repaid. Requires government bailout or forced closure.",
-    tEn:"Solvency Risk", tVn:"Rủi ro mất khả năng thanh toán"},
+  { id:31, cat:"Collocations", lv:"L4", role:"📝 Grammar",
+    ctx:"Collocation for failing to pay back the money.",
+    q:"The worst thing a borrower can do is _____ on a loan.",
+    ctxVN:"Cụm từ chỉ việc không thể trả nợ.",
+    qVN:"Điền từ: A borrower can _____ on a loan.",
+    ch:["decline", "default", "delay", "drop"],
+    chVN:["decline", "default", "delay", "drop"],
+    ans:1, exp:"The correct collocation is 'default on a loan'.",
+    tEn:"Default on a loan", tVn:"Vỡ nợ"},
 
-  { id:28, cat:"Risk", lv:"L6", role:"🚨 CEO",
-    ctx:"EMERGENCY: A false rumor goes viral on social media: 'Your bank is about to collapse.' By 8 AM the next morning, tens of thousands of panicked customers are physically lining up at every branch, demanding to withdraw ALL their deposits at once.",
-    q:"What is the financial term for this terrifying phenomenon?",
-    ctxVN:"KHẨN CẤP: Một tin đồn sai lan truyền trên mạng xã hội: 'Ngân hàng của bạn sắp sụp đổ.' Đến 8h sáng hôm sau, hàng chục nghìn khách hàng hoảng loạn xếp hàng tại mọi chi nhánh, đòi rút TOÀN BỘ tiền gửi cùng một lúc.",
-    qVN:"Thuật ngữ tài chính cho hiện tượng kinh khủng này là gì?",
-    ch:["Bull Market","Bailout","Bank Run","Recession"],
-    chVN:["Thị trường tăng giá","Gói cứu trợ","Rút tiền ồ ạt (Bank Run)","Suy thoái kinh tế"],
-    ans:2, exp:"Bank Run — mass withdrawal driven by panic, regardless of whether the bank is actually failing. Even healthy banks can collapse from a bank run since no bank holds 100% cash reserves.",
-    tEn:"Bank Run", tVn:"Rút tiền ồ ạt (hiện tượng hoảng loạn ngân hàng)"},
+  // ── General Review ──────────────────────────────
+  { id:32, cat:"Review", lv:"L5", role:"🎓 Student",
+    ctx:"Let's review! Which bank acts as the 'Lender of last resort'?",
+    q:"Choose the correct answer:",
+    ctxVN:"Ôn tập nào! Ngân hàng nào đóng vai trò 'Người cho vay cuối cùng'?",
+    qVN:"Chọn đáp án đúng:",
+    ch:["Commercial Bank", "Central Bank", "Investment Bank", "Retail Bank"],
+    chVN:["Ngân hàng Thương mại", "Ngân hàng Trung ương", "Ngân hàng Đầu tư", "Ngân hàng Bán lẻ"],
+    ans:1, exp:"Only the Central Bank can inject emergency liquidity into the system as the 'lender of last resort'.",
+    tEn:"Central Bank", tVn:"Ngân hàng Trung ương"},
+    
+  { id:33, cat:"Review", lv:"L5", role:"🎓 Student",
+    ctx:"Final question! What are the TWO core functions of a Commercial Bank?",
+    q:"Choose the correct pair:",
+    ctxVN:"Câu cuối! Hai chức năng CỐT LÕI của Ngân hàng Thương mại là gì?",
+    qVN:"Chọn cặp đáp án đúng:",
+    ch:["IPOs & M&A", "Accepting Deposits & Lending", "Issue Currency & Control Inflation", "Buy & Sell Real Estate"],
+    chVN:["Làm IPO & M&A", "Nhận tiền gửi & Cho vay", "Phát hành tiền & Kiểm soát lạm phát", "Mua bán Bất động sản"],
+    ans:1, exp:"Accepting Deposits and Lending are the two primary profit-making functions of a commercial bank.",
+    tEn:"Core Functions", tVn:"Các chức năng cốt lõi"},
 
-  { id:29, cat:"Risk", lv:"L6", role:"🏛️ Governor",
-    ctx:"Your bank is critically short of liquidity. The interbank market is completely frozen — no commercial bank dares to lend to you even overnight. You have one last option.",
-    q:"Who is the only institution that can inject emergency liquidity to save you?",
-    ctxVN:"Ngân hàng của bạn đang cực kỳ thiếu thanh khoản. Thị trường liên ngân hàng hoàn toàn đóng băng — không ngân hàng thương mại nào dám cho bạn vay dù chỉ qua đêm. Bạn chỉ còn một lựa chọn cuối.",
-    qVN:"Tổ chức duy nhất có thể bơm thanh khoản khẩn cấp để cứu bạn là ai?",
-    ch:["World Bank","Central Bank","Goldman Sachs","IMF"],
-    chVN:["Ngân hàng Thế giới (WB)","Ngân hàng Trung ương","Goldman Sachs","Quỹ Tiền tệ Quốc tế (IMF)"],
-    ans:1, exp:"Central Bank — the Lender of Last Resort. Only the Central Bank (e.g. SBV) can create and inject unlimited emergency liquidity to save the banking system from systemic collapse.",
-    tEn:"Lender of Last Resort", tVn:"Người cho vay cuối cùng (Ngân hàng Trung ương)"},
+  { id: 34, cat: "Commercial Bank", lv: "L1", role: "🏦 Banker",
+    ctx: "This bank acts as a bridge. It takes money from people who have extra, and gives it to people who need it.",
+    q: "What type of bank is this?",
+    ctxVN: "Ngân hàng này đóng vai trò cầu nối. Nhận tiền từ người dư dả và đưa cho người đang cần.",
+    qVN: "Đây là loại ngân hàng nào?",
+    ch: ["Central Bank", "Investment Bank", "Commercial Bank", "World Bank"],
+    chVN: ["Ngân hàng Trung ương", "Ngân hàng Đầu tư", "Ngân hàng Thương mại", "Ngân hàng Thế giới"],
+    ans: 2, exp: "A Commercial Bank acts as a financial intermediary between depositors and borrowers.",
+    tEn: "Financial Intermediary", tVn: "Trung gian tài chính"},
 
-  { id:30, cat:"Risk", lv:"L6", role:"🏛️ Governor",
-    ctx:"Your bank is officially 'Too Big To Fail.' The government and financial regulators have determined that if your bank collapses, it would trigger a chain reaction destroying the entire economy. The Government decides to inject billions of taxpayer money to keep your bank alive.",
-    q:"What is this controversial government rescue action called?",
-    ctxVN:"Ngân hàng của bạn chính thức 'Quá lớn để sụp đổ.' Chính phủ và cơ quan quản lý xác định rằng nếu ngân hàng của bạn sụp đổ, nó sẽ gây ra phản ứng dây chuyền phá hủy toàn bộ nền kinh tế. Chính phủ quyết định bơm hàng tỷ tiền thuế để giữ ngân hàng bạn tồn tại.",
-    qVN:"Hành động cứu trợ gây tranh cãi của chính phủ này gọi là gì?",
-    ch:["Bailout","Default","Devaluation","Speculation"],
-    chVN:["Gói cứu trợ tài chính (Bailout)","Vỡ nợ","Phá giá tiền tệ","Đầu cơ"],
-    ans:0, exp:"Bailout — a government rescue using public funds to prevent systemic collapse. Controversial as it rewards reckless risk-taking. Famous example: 2008 Crisis — AIG, Citibank, Bear Stearns.",
-    tEn:"Bailout", tVn:"Gói cứu trợ tài chính từ Chính phủ"}
+  { id: 35, cat: "Central Bank", lv: "L1", role: "🏛️ Governor",
+    ctx: "This institution is the ONLY one legally allowed to print paper money (banknotes) in a country.",
+    q: "Which institution is this?",
+    ctxVN: "Tổ chức này là nơi DUY NHẤT được phép in tiền giấy hợp pháp trong một quốc gia.",
+    qVN: "Đây là tổ chức nào?",
+    ch: ["Commercial Bank", "Central Bank", "Ministry of Finance", "Investment Bank"],
+    chVN: ["Ngân hàng Thương mại", "Ngân hàng Trung ương", "Bộ Tài chính", "Ngân hàng Đầu tư"],
+    ans: 1, exp: "Issuing currency (printing money) is an exclusive right of the Central Bank.",
+    tEn: "Issue Currency", tVn: "Phát hành tiền tệ"},
+
+  { id: 36, cat: "Investment Bank", lv: "L2", role: "💼 VP",
+    ctx: "Investment banks advise large companies on 'M&A'. What does M&A stand for?",
+    q: "Choose the correct full form:",
+    ctxVN: "Ngân hàng đầu tư tư vấn cho các công ty lớn về 'M&A'. M&A viết tắt của từ gì?",
+    qVN: "Chọn dạng viết đầy đủ đúng:",
+    ch: ["Money & Assets", "Mergers & Acquisitions", "Markets & Accounts", "Mortgages & Agreements"],
+    chVN: ["Tiền & Tài sản", "Sáp nhập & Mua lại", "Thị trường & Tài khoản", "Thế chấp & Thỏa thuận"],
+    ans: 1, exp: "M&A (Mergers and Acquisitions) refers to the buying, selling, and combining of different companies.",
+    tEn: "Mergers and Acquisitions", tVn: "Mua bán và Sáp nhập"},
+
+  { id: 37, cat: "Deposits", lv: "L2", role: "👤 Customer",
+    ctx: "You open an account just to receive your monthly salary. You don't care about earning interest.",
+    q: "Which account is the best fit?",
+    ctxVN: "Bạn mở tài khoản chỉ để nhận lương hàng tháng. Bạn không quan tâm đến việc nhận tiền lãi.",
+    qVN: "Tài khoản nào phù hợp nhất?",
+    ch: ["Fixed Deposit", "Investment Account", "Current Account", "Savings Account"],
+    chVN: ["Tiết kiệm có kỳ hạn", "Tài khoản đầu tư", "Tài khoản thanh toán", "Tài khoản tiết kiệm"],
+    ans: 2, exp: "A Current Account is mainly used for receiving salary and making payments, not for earning interest.",
+    tEn: "Current Account", tVn: "Tài khoản thanh toán"},
+
+  { id: 38, cat: "Lending", lv: "L3", role: "🏢 Director",
+    ctx: "A bakery needs money to buy 5 new industrial ovens to expand their production.",
+    q: "What type of loan do they need?",
+    ctxVN: "Một tiệm bánh cần tiền để mua 5 lò nướng công nghiệp mới nhằm mở rộng sản xuất.",
+    qVN: "Họ cần loại khoản vay nào?",
+    ch: ["Personal Loan", "Mortgage", "Business Loan", "Student Loan"],
+    chVN: ["Vay cá nhân", "Vay mua nhà", "Vay kinh doanh", "Vay sinh viên"],
+    ans: 2, exp: "A Business Loan is provided to companies to help them grow, buy equipment, or cover daily operations.",
+    tEn: "Business Loan", tVn: "Vay kinh doanh"},
+
+  { id: 39, cat: "Commercial Bank", lv: "L2", role: "🏦 Banker",
+    ctx: "A bank branch is offering special credit cards and student loans to university students.",
+    q: "Which division of the bank handles this?",
+    ctxVN: "Một chi nhánh ngân hàng đang cung cấp thẻ tín dụng và khoản vay sinh viên cho sinh viên đại học.",
+    qVN: "Bộ phận nào của ngân hàng xử lý việc này?",
+    ch: ["Corporate Banking", "Investment Banking", "Retail Banking", "Central Banking"],
+    chVN: ["Ngân hàng Doanh nghiệp", "Ngân hàng Đầu tư", "Ngân hàng Bán lẻ", "Ngân hàng Trung ương"],
+    ans: 2, exp: "Retail Banking focuses on financial products for individual consumers (like students).",
+    tEn: "Retail Banking", tVn: "Ngân hàng bán lẻ"},
+
+  { id: 40, cat: "Commercial Bank", lv: "L2", role: "🏢 Director",
+    ctx: "A company needs a system to automatically pay salaries to its 500 employees every month.",
+    q: "Which division of the bank provides this payroll service?",
+    ctxVN: "Một công ty cần hệ thống để tự động trả lương cho 500 nhân viên mỗi tháng.",
+    qVN: "Bộ phận nào của ngân hàng cung cấp dịch vụ trả lương này?",
+    ch: ["Retail Banking", "Corporate Banking", "Investment Banking", "Central Banking"],
+    chVN: ["Ngân hàng Bán lẻ", "Ngân hàng Doanh nghiệp", "Ngân hàng Đầu tư", "Ngân hàng Trung ương"],
+    ans: 1, exp: "Corporate Banking provides operational services like payroll and trade finance for businesses.",
+    tEn: "Corporate Banking", tVn: "Ngân hàng doanh nghiệp"},
+
+  { id: 41, cat: "Collocations", lv: "L4", role: "📝 Grammar",
+    ctx: "Collocation for taking money out.",
+    q: "Minh uses his ATM card to _____ money for the weekend.",
+    ctxVN: "Cụm từ chỉ việc lấy tiền ra khỏi tài khoản.",
+    qVN: "Điền từ: Minh uses his ATM card to _____ money.",
+    ch: ["withdraw", "deposit", "earn", "apply"],
+    chVN: ["withdraw", "deposit", "earn", "apply"],
+    ans: 0, exp: "The correct collocation is 'withdraw money' (taking cash out).",
+    tEn: "Withdraw money", tVn: "Rút tiền"},
+
+  { id: 42, cat: "Collocations", lv: "L4", role: "📝 Grammar",
+    ctx: "Collocation for receiving profit on your savings.",
+    q: "If you keep money under your bed, you will never _____ interest.",
+    ctxVN: "Cụm từ chỉ việc nhận được lợi nhuận từ tiền tiết kiệm.",
+    qVN: "Điền từ: If you keep money under your bed, you will never _____ interest.",
+    ch: ["pay", "charge", "earn", "take"],
+    chVN: ["pay", "charge", "earn", "take"],
+    ans: 2, exp: "The correct collocation is 'earn interest'. Keeping cash at home earns nothing.",
+    tEn: "Earn interest", tVn: "Nhận tiền lãi"},
+
+  { id: 43, cat: "Collocations", lv: "L4", role: "📝 Grammar",
+    ctx: "Collocation for the bank refusing to give you money.",
+    q: "The bank refused to _____ him a loan because of his bad credit history.",
+    ctxVN: "Cụm từ chỉ việc ngân hàng cấp tiền cho bạn (trong ngữ cảnh bị từ chối).",
+    qVN: "Điền từ: The bank refused to _____ him a loan.",
+    ch: ["apply", "grant", "repay", "default"],
+    chVN: ["apply", "grant", "repay", "default"],
+    ans: 1, exp: "The correct collocation is 'grant a loan'. Here, the bank refused to grant it.",
+    tEn: "Grant a loan", tVn: "Cấp / Chấp thuận khoản vay"}
+
 ];
 
 // ══════════════════════════════════════
@@ -1564,14 +828,13 @@ let G = {
   streak:0, wrongStreak:0, streakMax:0,
   answered:false, timerIv:null, timeLeft:TIMER, frozen:false,
   hintDecode:false, hintElim:false, hintFreeze:false,
-  // analytics
   correct:0, wrong:0, answered_count:0,
   timeLog:[], profitK:0, profitS:0, profitMult:0,
   hintCost:0, hintCount:0,
   catR:{}, log:[],
 };
 
-const CATS = ['Bank Types','Deposits','Lending','Payments','Forex','Risk'];
+const CATS = ['Central Bank','Investment Bank','Commercial Bank','Deposits','Lending','Collocations','Review'];
 
 function fm(v){
   const a=Math.abs(v);
@@ -1604,16 +867,27 @@ function getPenalty(ws){
   return 2e6;
 }
 
+// ✅ Đã thêm hàm getRank bằng tiếng Anh
+function getRank(cap){
+  if(cap>100e6) return '🏆 Too Big To Fail';
+  if(cap>80e6) return '🔷 Managing Director';
+  if(cap>60e6) return '💼 Director';
+  if(cap>40e6) return '📊 Vice President';
+  if(cap>25e6) return '📋 Associate';
+  if(cap>10e6) return '📁 Analyst';
+  return '📌 Intern';
+}
+
 function startGame(){
   G.name = document.getElementById('name-inp').value.trim()||'Anonymous';
   G.cap = INIT_CAP;
-  // Build 20 questions — pick proportionally across levels
-  const shuffled = shuffle(DB).slice(0, Q_COUNT).map(q=>{
-    const idx=q.ch.map((c,i)=>({en:c,vn:q.chVN[i],oi:i}));
-    const sh=shuffle(idx);
+  // Lấy ngẫu nhiên 20 câu từ DB
+  const picked = shuffle(DB).slice(0, Q_COUNT).map(q=>{
+    const idx = q.ch.map((c,i)=>({en:c, vn:q.chVN[i], oi:i}));
+    const sh = shuffle(idx);
     return {...q, ch:sh.map(x=>x.en), chVN:sh.map(x=>x.vn), ans:sh.findIndex(x=>x.oi===q.ans)};
   });
-  G.qs=shuffled; G.cur=0; G.streak=0; G.wrongStreak=0; G.streakMax=0;
+  G.qs=picked; G.cur=0; G.streak=0; G.wrongStreak=0; G.streakMax=0;
   G.answered=false; G.timeLeft=TIMER; G.frozen=false;
   G.correct=0; G.wrong=0; G.answered_count=0;
   G.timeLog=[]; G.profitK=0; G.profitS=0; G.profitMult=0;
@@ -1624,9 +898,17 @@ function startGame(){
   showScreen('s-game');
 }
 
-function loadQ(){
+function loadQ(lang='en'){
   const q=G.qs[G.cur];
-  G.answered=false; G.hintDecode=false; G.hintElim=false; G.hintFreeze=false; G.frozen=false;
+  G.answered=false; 
+  // Reset hint decode flag mỗi câu mới, nhưng không reset trạng thái nút (để nút xám nếu đã dùng)
+  if(!G.hintDecode) {
+    // nothing
+  }
+  G.hintDecode = false; // Mỗi câu mới có thể dùng lại nút dịch
+  G.hintElim = false;
+  G.hintFreeze = false;
+  G.frozen = false;
 
   document.getElementById('hud-role').textContent=q.role;
   document.getElementById('hud-q').textContent=`Q ${G.cur+1}/${G.qs.length}`;
@@ -1635,17 +917,24 @@ function loadQ(){
   updateWarnUI();
 
   document.getElementById('q-meta').textContent=`📋 ${q.cat.toUpperCase()} · ${q.lv}`;
-  document.getElementById('q-body').textContent=q.ctx;
-  document.getElementById('q-body').className='q-body';
-  document.getElementById('q-stem').textContent=q.q;
+  
+  // Hiển thị ngôn ngữ dựa trên lang (mặc định 'en')
+  const bodyText = lang==='vn' ? q.ctxVN : q.ctx;
+  const stemText = lang==='vn' ? q.qVN : q.q;
+  const choicesText = lang==='vn' ? q.chVN : q.ch;
+  
+  document.getElementById('q-body').textContent=bodyText;
+  document.getElementById('q-body').className='q-body' + (lang==='vn'?' vn':'');
+  document.getElementById('q-stem').textContent=stemText;
 
   const L=['A','B','C','D'];
-  document.getElementById('choices').innerHTML=q.ch.map((c,i)=>
+  document.getElementById('choices').innerHTML=choicesText.map((c,i)=>
     `<button class="choice" onclick="pick(${i})" id="ch${i}">
       <div class="ch-l">${L[i]}</div>
       <div class="ch-t">${c}</div>
     </button>`).join('');
 
+  // Reset nút nếu chưa dùng ở câu này (đảm bảo không bị xám)
   ['h-decode','h-elim','h-freeze'].forEach(id=>{
     document.getElementById(id).classList.remove('used');
   });
@@ -1709,6 +998,7 @@ function updateTimerUI(t){
   else{ring.style.stroke='var(--blue)';num.style.color='var(--navy)';}
 }
 
+
 function timeUp(){
   if(G.answered)return;
   G.answered=true;
@@ -1732,41 +1022,45 @@ function timeUp(){
   showResult(false,-penalty,true,[]);
 }
 
+
+
+
 function useHint(type){
   if(G.answered)return;
   const q=G.qs[G.cur];
-  if(type==='decode'&&!G.hintDecode){
-    G.hintDecode=true;
-    G.cap=Math.max(G.cap-COST_DECODE,0);
-    G.hintCost+=COST_DECODE; G.hintCount++;
+  if(type==='decode' && !G.hintDecode){
+    G.hintDecode = true;
+    G.cap = Math.max(G.cap - COST_DECODE, 0);
+    G.hintCost += COST_DECODE;
+    G.hintCount++;
     document.getElementById('h-decode').classList.add('used');
-    // Switch to VN
-    document.getElementById('q-body').textContent=q.ctxVN;
-    document.getElementById('q-body').className='q-body vn';
-    document.getElementById('q-stem').textContent=q.qVN;
-    document.querySelectorAll('.choice .ch-t').forEach((el,i)=>{el.textContent=q.chVN[i];});
+    // Đổi sang tiếng Việt
+    loadQ('vn');
     updateCapHUD(); updateWarnUI();
-  } else if(type==='eliminate'&&!G.hintElim){
-    G.hintElim=true;
-    G.cap=Math.max(G.cap-COST_ELIM,0);
-    G.hintCost+=COST_ELIM; G.hintCount++;
+  }
+  else if(type==='eliminate' && !G.hintElim){
+    G.hintElim = true;
+    G.cap = Math.max(G.cap - COST_ELIM, 0);
+    G.hintCost += COST_ELIM;
+    G.hintCount++;
     document.getElementById('h-elim').classList.add('used');
-    // Pick 2 wrong answers to eliminate
-    const wrongs=[];
-    for(let i=0;i<q.ch.length;i++){if(i!==q.ans)wrongs.push(i);}
-    const toElim=shuffle(wrongs).slice(0,2);
+    const wrongs = [];
+    for(let i=0;i<q.ch.length;i++){ if(i!==q.ans) wrongs.push(i); }
+    const toElim = shuffle(wrongs).slice(0,2);
     toElim.forEach(i=>document.getElementById('ch'+i).classList.add('elim'));
     updateCapHUD(); updateWarnUI();
-  } else if(type==='freeze'&&!G.hintFreeze){
-    G.hintFreeze=true;
-    G.frozen=true;
-    G.cap=Math.max(G.cap-COST_FREEZE,0);
-    G.hintCost+=COST_FREEZE; G.hintCount++;
+  }
+  else if(type==='freeze' && !G.hintFreeze){
+    G.hintFreeze = true;
+    G.frozen = true;
+    G.cap = Math.max(G.cap - COST_FREEZE, 0);
+    G.hintCost += COST_FREEZE;
+    G.hintCount++;
     document.getElementById('h-freeze').classList.add('used');
-    G.timeLeft=Math.min(G.timeLeft+FREEZE_SECS,35);
+    G.timeLeft = Math.min(G.timeLeft + FREEZE_SECS, 35);
     updateTimerUI(G.timeLeft);
     updateCapHUD(); updateWarnUI();
-    setTimeout(()=>{G.frozen=false;},FREEZE_SECS*1000);
+    setTimeout(()=>{ G.frozen = false; }, FREEZE_SECS*1000);
   }
 }
 
@@ -1780,18 +1074,17 @@ function pick(i){
   const tLeft=Math.max(0,G.timeLeft);
 
   const hints=[];
-  if(G.hintDecode)hints.push('decode');
-  if(G.hintElim)hints.push('eliminate');
-  if(G.hintFreeze)hints.push('freeze');
+  if(G.hintDecode) hints.push('decode');
+  if(G.hintElim) hints.push('eliminate');
+  if(G.hintFreeze) hints.push('freeze');
 
   let delta=0, breakdown=[];
 
   if(ok){
     if(G.hintDecode){
-      // Flat reward, no time bonus, no streak
       delta=DECODE_REWARD;
       G.profitK+=DECODE_REWARD;
-      breakdown.push(`Base +${fm(DECODE_REWARD)} (Decoded)`);
+      breakdown.push(`Base +${fm(DECODE_REWARD)} (dùng Dịch)`);
     } else {
       const base=BASE_REWARD;
       const tBonus=Math.round((tLeft/TIMER)*MAX_TIME_BONUS);
@@ -1866,6 +1159,7 @@ function showResult(ok,delta,timeout,breakdown=[],hints=[]){
   document.getElementById('rsheet').classList.add('show');
 }
 
+
 function nextQ(){
   document.getElementById('overlay').classList.remove('show');
   document.getElementById('rsheet').classList.remove('show');
@@ -1884,20 +1178,9 @@ function nextQ(){
   }
 }
 
-// ── REPORT ────────────────────────────────────────────────
-function getRank(cap){
-  if(cap>100e6)return'🏆 Too Big To Fail';
-  if(cap>80e6)return'🔷 Managing Director';
-  if(cap>60e6)return'💼 Director';
-  if(cap>40e6)return'📊 Vice President';
-  if(cap>25e6)return'📋 Associate';
-  if(cap>10e6)return'📁 Analyst';
-  return'📌 Intern';
-}
-
 function buildReport(){
   document.getElementById('rh-name').textContent=G.name;
-  document.getElementById('rh-rank').textContent=getRank(G.cap);
+  document.getElementById('rh-rank').textContent=getRank(G.cap); // Sử dụng hàm getRank
   document.getElementById('rh-cap').textContent=fm(G.cap);
   document.getElementById('rh-sub').textContent=
     `Answered ${G.answered_count}/${G.qs.length} questions`;
